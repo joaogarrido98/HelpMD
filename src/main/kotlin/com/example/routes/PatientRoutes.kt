@@ -4,8 +4,8 @@ import com.example.models.Patient
 import com.example.models.PatientLoginRequest
 import com.example.models.ServerResponse
 import com.example.services.PatientServices
+import com.example.tools.HashingUtils
 import com.example.tools.JwtManager
-import com.example.tools.ProjectUtils
 import io.ktor.server.application.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
@@ -25,7 +25,7 @@ fun Route.patientRoutes(patientServices: PatientServices) {
             }
             try {
                 val patient: Patient? = patientServices.findPatientByEmail(request.patient_email)
-                if (patient == null || patient.patient_password == ProjectUtils.hash(request.patient_password)) {
+                if (patient == null || patient.patient_password == HashingUtils.hash(request.patient_password)) {
                     if (!patient!!.patient_active) {
                         call.respond(ServerResponse(false, "Account not active", null))
                         return@post
