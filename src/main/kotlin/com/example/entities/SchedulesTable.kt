@@ -3,6 +3,9 @@ package com.example.entities
 import org.jetbrains.exposed.sql.Table
 import org.jetbrains.exposed.sql.javatime.time
 
+/**
+ * ORM object for SCHEDULE table on DB
+ */
 object SchedulesTable : Table("Schedule") {
     val schedule_id = integer("schedule_id").autoIncrement()
     val day_of_week = integer("day_of_week")

@@ -2,6 +2,9 @@ package com.example.entities
 
 import org.jetbrains.exposed.sql.Table
 
+/**
+ * ORM object for DOCTOR table on DB
+ */
 object DoctorTable : Table("Doctor") {
     val doctor_id = integer("doctor_id").autoIncrement()
     val doctor_name = varchar("doctor_name", 100)

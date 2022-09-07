@@ -11,17 +11,17 @@ object ProjectUtils {
     private val hashKey = System.getenv("HASH_KEY").toByteArray()
 
     /**
-     * create a secret key from a given byteArray
+     * create a secret key from a given byteArray and algorithm
      */
-    private val hmacKey = SecretKeySpec(hashKey, "HmacSHA1")
+    private val hmacKey = SecretKeySpec(hashKey, "HmacSHA256")
 
     /**
-     * hash a given string using SHA1
+     * hash a given string using SHA256
      * @param word String, string to be hashed
      * @return hashed string
      */
     fun hash(word: String): String {
-        val hmac = Mac.getInstance("HmacSHA1")
+        val hmac = Mac.getInstance("HmacSHA256")
         hmac.init(hmacKey)
         return hex(hmac.doFinal(word.toByteArray(Charsets.UTF_8)))
     }

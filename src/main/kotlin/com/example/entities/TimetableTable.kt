@@ -4,6 +4,9 @@ import org.jetbrains.exposed.sql.Table
 import org.jetbrains.exposed.sql.javatime.date
 import org.jetbrains.exposed.sql.javatime.time
 
+/**
+ * ORM object for TIMETABLE table on DB
+ */
 object TimetableTable : Table("Timetable") {
     val timetable_id = integer("timetable_id").autoIncrement()
     val timetable_date = date("timetable_date")

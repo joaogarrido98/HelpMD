@@ -2,6 +2,11 @@ package com.example.models
 
 import kotlinx.serialization.Serializable
 
+/*This file contains all the models for the patient requests
+* Patient model
+* Login model
+* */
+
 @Serializable
 data class Patient(
     val patient_id: Int,

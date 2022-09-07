@@ -3,6 +3,9 @@ package com.example.entities
 import org.jetbrains.exposed.sql.Table
 import org.jetbrains.exposed.sql.javatime.date
 
+/**
+ * ORM object for PATIENT table on DB
+ */
 object PatientTable : Table("Patient"){
     val patient_id = integer("patient_id").autoIncrement()
     val patient_name = varchar("patient_name", 100)

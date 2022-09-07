@@ -2,6 +2,9 @@ package com.example.entities
 
 import org.jetbrains.exposed.sql.Table
 
+/**
+ * ORM object for PATIENT_HISTORY table on DB
+ */
 object PatientHistoryTable: Table("PatientHistory") {
     val history_id = integer("history_id").autoIncrement()
     val patient_id = integer("patient_id").references(PatientTable.patient_id).uniqueIndex("idx_patient_history")

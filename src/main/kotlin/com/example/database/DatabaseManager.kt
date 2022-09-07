@@ -65,7 +65,6 @@ object DatabaseManager {
         return HikariDataSource(config)
     }
 
-
     /**
      * function that takes a function as parameter and executes it inside a coroutine
      */

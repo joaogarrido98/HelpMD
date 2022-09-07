@@ -2,6 +2,9 @@ package com.example.entities
 
 import org.jetbrains.exposed.sql.Table
 
+/**
+ * ORM object for SCHEDULE_DOCTOR table on DB
+ */
 object ScheduleDoctorTable : Table("ScheduleDoctor") {
     val schedule_doctor_id = integer("schedule_id").autoIncrement()
     val schedule_timetable = integer("schedule_timetable").references(SchedulesTable.schedule_id)
