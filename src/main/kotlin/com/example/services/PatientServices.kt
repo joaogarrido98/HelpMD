@@ -3,7 +3,9 @@ package com.example.services
 import com.example.database.DatabaseManager
 import com.example.entities.ActivationTable
 import com.example.entities.PatientTable
+import com.example.models.Activation
 import com.example.models.Patient
+import com.example.models.PatientRegisterRequest
 import org.jetbrains.exposed.sql.*
 import java.time.LocalDate
 
@@ -13,6 +15,10 @@ import java.time.LocalDate
 class PatientServices {
     private val db = DatabaseManager
 
+    /**
+     * find patient where email is the same as given
+     * @param email holds the email to find the user
+     */
     suspend fun findPatientByEmail(email: String): Patient? {
         return db.query {
             PatientTable.select { PatientTable.patient_email.eq(email) }
@@ -21,25 +27,11 @@ class PatientServices {
         }
     }
 
-
-    /**
-     * update the password of a patient
-     * @param email holds the email of the patient that needs to be updated
-     * @param newPassword holds the new password
-     */
-    suspend fun updatePassword(email: String, newPassword: String) {
-        db.query {
-            PatientTable.update(where = { PatientTable.patient_email eq email }) {
-                it[patient_password] = newPassword
-            }
-        }
-    }
-
     /**
      * Add a new patient to the database
-     * @param patient holds a Patient object
+     * @param patient holds a Patient register object
      */
-    suspend fun addPatient(patient: Patient, code: String) {
+    suspend fun addPatient(patient: PatientRegisterRequest, code: String) {
         db.query {
             PatientTable.insert {
                 it[patient_name] = patient.patient_name
@@ -50,11 +42,28 @@ class PatientServices {
                 it[patient_weight] = patient.patient_weight
                 it[patient_height] = patient.patient_height
                 it[patient_active] = false
+                it[patient_deaf] = patient.patient_deaf
             }
             ActivationTable.insert {
                 it[activation_code] = code
-                it[patient_id] = patient.patient_id
+                it[patient_email] = patient.patient_email
             }
+        }
+    }
+
+
+    /**
+     * query to find a row in activation table from the activation code
+     */
+    suspend fun findActivationCode(activation_code: String): Activation? {
+        return db.query {
+            ActivationTable.select {
+                ActivationTable.activation_code.eq(
+                    activation_code
+                )
+            }
+                .map { rowToActivation(it) }
+                .singleOrNull()
         }
     }
 
@@ -73,6 +82,31 @@ class PatientServices {
     }
 
 
+    /**
+     * update the password of a patient
+     * @param email holds the email of the patient that needs to be updated
+     * @param newPassword holds the new password
+     */
+    suspend fun updatePassword(email: String, newPassword: String) {
+        db.query {
+            PatientTable.update(where = { PatientTable.patient_email eq email }) {
+                it[patient_password] = newPassword
+            }
+        }
+    }
+
+    private fun rowToActivation(row: ResultRow): Activation {
+        return Activation(
+            activation_code = row[ActivationTable.activation_code],
+            patient_email = row[ActivationTable.patient_email]
+        )
+    }
+
+    /**
+     * This method transforms a database row into a Patient object
+     * @param row has the row that was retrieved from the database
+     * @return a Patient object
+     */
     private fun rowToPatient(row: ResultRow): Patient {
         return Patient(
             patient_id = row[PatientTable.patient_id].toInt(),
