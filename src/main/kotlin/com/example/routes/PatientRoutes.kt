@@ -1,15 +1,13 @@
 package com.example.routes
 
-import com.example.models.Patient
-import com.example.models.PatientLoginRequest
-import com.example.models.PatientRegisterRequest
-import com.example.models.ServerResponse
+import com.example.models.*
 import com.example.services.PatientServices
 import com.example.tools.HashingUtils
 import com.example.tools.JwtManager
 import com.example.tools.MessageUtils
 import com.example.tools.ProjectUtils
 import io.ktor.server.application.*
+import io.ktor.server.auth.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
@@ -24,28 +22,29 @@ fun Route.patientRoutes(patientServices: PatientServices) {
     post("/patient/login") {
         val request = call.receive<PatientLoginRequest>()
         if (!request.isValid()) {
-            call.respond(ServerResponse(false, "Bad Request", ""))
+            call.respond(ServerResponse(false, "Bad Request"))
             return@post
         }
         try {
             val patient: Patient? = patientServices.findPatientByEmail(request.patient_email)
             if (patient == null) {
-                call.respond(ServerResponse(false, "No such user", ""))
+                call.respond(ServerResponse(false, "User does not exist"))
                 return@post
             }
             if (patient.patient_password != HashingUtils.hash(request.patient_password)) {
-                call.respond(ServerResponse(false, "User email or password incorrect", ""))
+                call.respond(ServerResponse(false, "User email or password incorrect"))
                 return@post
             }
             if (!patient.patient_active) {
-                call.respond(ServerResponse(false, "Account not active", ""))
+                call.respond(ServerResponse(false, "Account not active"))
                 return@post
             }
             call.respond(ServerResponse(true, JwtManager.generateTokenPatient(patient), patient))
         } catch (e: Exception) {
-            call.respond(ServerResponse(false, "Unable to login", ""))
+            call.respond(ServerResponse(false, "Unable to login"))
         }
     }
+
 
     /**
      * register route logic
@@ -54,34 +53,34 @@ fun Route.patientRoutes(patientServices: PatientServices) {
     post("patient/register") {
         val request = call.receive<PatientRegisterRequest>()
         if (!request.isValid()) {
-            call.respond(ServerResponse(false, "Bad Request", ""))
+            call.respond(ServerResponse(false, "Bad Request"))
             return@post
         }
         try {
             val patient = patientServices.findPatientByEmail(request.patient_email)
             if (patient != null) {
-                call.respond(ServerResponse(false, "Email already in use", ""))
+                call.respond(ServerResponse(false, "Email already in use"))
                 return@post
             }
             request.patient_password = HashingUtils.hash(request.patient_password)
             val code = ProjectUtils.generateRandomCode()
             patientServices.addPatient(request, code)
             MessageUtils.sendRegistrationEmail(request.patient_email, code)
-            call.respond(ServerResponse(true, "Account created", ""))
+            call.respond(ServerResponse(true, "Account created"))
         } catch (e: Exception) {
-            call.respond(ServerResponse(false, "Unable to create account", ""))
+            call.respond(ServerResponse(false, "Unable to create account"))
         }
     }
 
     /**
      * This method checks the query parameter code and if is not empty
-     * find the activation code in database, match it to the correct user and
-     * activate that specific user
+     * find the activation code in database, match it to the correct patient and
+     * activate that specific patient
      */
     get("patient/activate") {
         val code = call.request.queryParameters["code"]
         if (code.isNullOrEmpty()) {
-            call.respond("Sorry! Something went wrong")
+            call.respond("Bad Request")
             return@get
         }
         try {
@@ -101,10 +100,65 @@ fun Route.patientRoutes(patientServices: PatientServices) {
             call.respond("Unable to activate account")
         }
     }
+
+    /**
+     * This method checks if request is valid and if so,
+     * find the patient that requested a new password and send it
+     * to him through email, updating it and hashing it at the same time
+     * in the database
+     */
+    //can be changed into a page online that changes the password ot a new one that we want v2
+    post("patient/password/recover") {
+        val request = call.receive<PatientRecoverPasswordRequest>()
+        if (!request.isValid()) {
+            call.respond(ServerResponse(false, "Bad Request"))
+            return@post
+        }
+        try {
+            val patient = patientServices.findPatientByEmail(request.patient_email)
+            if (patient == null) {
+                call.respond(ServerResponse(false, "User does not exist"))
+                return@post
+            }
+            val password = ProjectUtils.generateRandomCode()
+            val hashedPassword = HashingUtils.hash(password)
+            MessageUtils.sendRecoverEmail(request.patient_email, password)
+            patientServices.updatePassword(request.patient_email, hashedPassword)
+            call.respond(ServerResponse(true, "New Password Sent"))
+        } catch (e: Exception) {
+            call.respond(ServerResponse(false, "Unable to send new password"))
+        }
+    }
+
+
+    /**
+     * All routes inside this authenticate block only allow patient to
+     * actually interact with server if they are authenticated
+     */
+    authenticate("patient-interaction") {
+        /**
+         * This method gets a new password in the request
+         * and changes the current password to the new password in the
+         * database where the jwt token is the same as the patient
+         */
+        post("patient/password/change") {
+            val request = call.receive<PatientChangePasswordRequest>()
+            if (!request.isValid()) {
+                call.respond(ServerResponse(false, "Bad request"))
+                return@post
+            }
+            try {
+                val email = call.principal<Patient>()!!.patient_email
+                val password = HashingUtils.hash(request.patient_password)
+                patientServices.updatePassword(email, password)
+                call.respond(ServerResponse(true, "Password Updated"))
+            } catch (e: Exception) {
+                call.respond(ServerResponse(false, "Unable to update password"))
+            }
+        }
+    }
 }
 
 /**
- * when done add an if message not sent then delete user
- * change from email
- * change email template
+ * when done add an if message not sent then delete user ON REGISTER
  */

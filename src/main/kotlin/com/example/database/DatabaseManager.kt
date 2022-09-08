@@ -18,7 +18,7 @@ object DatabaseManager {
      * connection to the database and creation of the tables
      */
     fun init() {
-        Database.connect(hikariLocal())
+        Database.connect(hikariTesting())
         transaction {
             SchemaUtils.create(PatientTable)
             SchemaUtils.create(DoctorTable)
@@ -58,6 +58,17 @@ object DatabaseManager {
         val config = HikariConfig()
         config.driverClassName = System.getenv("JDBC_DRIVER")
         config.jdbcUrl = System.getenv("DATABASE_URL")
+        config.maximumPoolSize = 3
+        config.isAutoCommit = false
+        config.transactionIsolation = "TRANSACTION_REPEATABLE_READ"
+        config.validate()
+        return HikariDataSource(config)
+    }
+
+    private fun hikariTesting(): HikariDataSource {
+        val config = HikariConfig()
+        config.driverClassName = "org.postgresql.Driver"
+        config.jdbcUrl = "jdbc:postgresql://localhost/HelpMD?user=postgres&password=postgres"
         config.maximumPoolSize = 3
         config.isAutoCommit = false
         config.transactionIsolation = "TRANSACTION_REPEATABLE_READ"

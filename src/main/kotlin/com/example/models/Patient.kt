@@ -1,13 +1,13 @@
 package com.example.models
 
-import kotlinx.serialization.Serializable
+import io.ktor.server.auth.*
 
-/*This file contains all the models for the patient requests
-* Patient model
-* Login model
-* */
+/**
+ * This file contains all the models for the patient requests
+ * Patient model
+ * Login model
+ */
 
-@Serializable
 data class Patient(
     val patient_id: Int,
     val patient_email: String,
@@ -19,9 +19,9 @@ data class Patient(
     val patient_password: String,
     val patient_active: Boolean,
     val patient_deaf: Boolean
-)
+) : Principal
 
-@Serializable
+
 data class PatientLoginRequest(
     val patient_email: String,
     val patient_password: String
@@ -35,7 +35,7 @@ data class PatientLoginRequest(
     }
 }
 
-@Serializable
+
 data class PatientRegisterRequest(
     val patient_email: String,
     val patient_name: String,
@@ -56,5 +56,29 @@ data class PatientRegisterRequest(
     }
 }
 
+
+data class PatientRecoverPasswordRequest(
+    val patient_email: String
+) {
+    /**
+     * Validates the recover password request
+     * @return true or false depending on if all data needed is present
+     */
+    fun isValid(): Boolean {
+        return this.patient_email.isNotEmpty()
+    }
+}
+
+data class PatientChangePasswordRequest(
+    val patient_password: String
+) {
+    /**
+     * Validates the change password request
+     * @return true or false depending on if all data needed is present
+     */
+    fun isValid(): Boolean {
+        return this.patient_password.isNotEmpty()
+    }
+}
 
 

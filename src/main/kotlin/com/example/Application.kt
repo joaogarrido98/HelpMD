@@ -5,30 +5,53 @@ import com.example.routes.doctorRoutes
 import com.example.routes.patientRoutes
 import com.example.services.DoctorServices
 import com.example.services.PatientServices
-import io.ktor.serialization.kotlinx.json.*
+import com.example.tools.JwtManager
+import com.fasterxml.jackson.core.util.DefaultIndenter
+import com.fasterxml.jackson.core.util.DefaultPrettyPrinter
+import com.fasterxml.jackson.databind.SerializationFeature
+import io.ktor.serialization.jackson.*
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
+import io.ktor.server.auth.jwt.*
 import io.ktor.server.plugins.contentnegotiation.*
 import io.ktor.server.plugins.defaultheaders.*
 import io.ktor.server.routing.*
-import kotlinx.serialization.json.Json
 
 fun main(args: Array<String>): Unit = io.ktor.server.netty.EngineMain.main(args)
 
 @Suppress("unused")
 fun Application.module() {
-    install(Authentication) {
-    }
-    install(DefaultHeaders)
-
-    install(ContentNegotiation) {
-        json(Json {
-            prettyPrint = true
-        })
-    }
     DatabaseManager.init()
     val patientServices = PatientServices()
     val doctorServices = DoctorServices()
+
+    install(DefaultHeaders)
+
+    install(ContentNegotiation) {
+        jackson {
+            configure(SerializationFeature.INDENT_OUTPUT, true)
+            setDefaultPrettyPrinter(DefaultPrettyPrinter().apply {
+                indentArraysWith(DefaultPrettyPrinter.FixedSpaceIndenter.instance)
+                indentObjectsWith(DefaultIndenter("  ", "\n"))
+            })
+        }
+    }
+
+    install(Authentication) {
+        /**
+         * create patient authentication path with patient email validation
+         */
+        jwt("patient-interaction") {
+            realm = System.getenv("JWT_REALM")
+            verifier(JwtManager.verifier)
+            validate {
+                val payload = it.payload
+                val patient_email = payload.getClaim("patient_email").asString()
+                val patient = patientServices.findPatientByEmail(patient_email)
+                patient
+            }
+        }
+    }
 
     routing {
         patientRoutes(patientServices)
