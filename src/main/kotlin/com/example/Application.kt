@@ -5,6 +5,7 @@ import com.example.routes.doctorRoutes
 import com.example.routes.patientHistoryRoutes
 import com.example.routes.patientRoutes
 import com.example.services.DoctorServices
+import com.example.services.HistoryServices
 import com.example.services.PatientServices
 import com.example.tools.JwtManager
 import com.fasterxml.jackson.core.util.DefaultIndenter
@@ -25,6 +26,7 @@ fun Application.module() {
     DatabaseManager.init()
     val patientServices = PatientServices()
     val doctorServices = DoctorServices()
+    val historyServices = HistoryServices()
 
     install(DefaultHeaders)
 
@@ -70,7 +72,7 @@ fun Application.module() {
 
     routing {
         patientRoutes(patientServices)
-        patientHistoryRoutes(patientServices)
+        patientHistoryRoutes(historyServices)
         doctorRoutes(doctorServices)
     }
 }

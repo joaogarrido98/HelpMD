@@ -17,7 +17,8 @@ fun Route.patientRoutes(patientServices: PatientServices) {
     /**
      * login route logic
      * check if the request is valid
-     * if yes check for the patient and password and match them if correct we return a jwt token and the patient object
+     * if yes check for the patient and password and match them
+     * if correct we return a jwt token and the patient object
      */
     post("/patient/login") {
         val request = call.receive<PatientLoginRequest>()
@@ -48,7 +49,8 @@ fun Route.patientRoutes(patientServices: PatientServices) {
 
     /**
      * register route logic
-     * if all data is valid then insert new patient into db and send email for account activation to patient
+     * if all data is valid then insert new patient into db and send email
+     * for account activation to patient
      */
     post("patient/register") {
         val request = call.receive<PatientRegisterRequest>()
@@ -108,7 +110,7 @@ fun Route.patientRoutes(patientServices: PatientServices) {
      * to him through email, updating it and hashing it at the same time
      * in the database
      */
-    //can be changed into a page online that changes the password ot a new one that we want v2
+    // Todo can be changed into a page online that changes the password ot a new one that we want v2
     post("patient/password/recover") {
         val request = call.receive<PatientRecoverPasswordRequest>()
         if (!request.isValid()) {

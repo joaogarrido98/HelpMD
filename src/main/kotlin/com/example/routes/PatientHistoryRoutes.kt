@@ -3,14 +3,14 @@ package com.example.routes
 import com.example.models.AddPatientHistoryRequest
 import com.example.models.Patient
 import com.example.models.ServerResponse
-import com.example.services.PatientServices
+import com.example.services.HistoryServices
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 
-fun Route.patientHistoryRoutes(patientServices: PatientServices) {
+fun Route.patientHistoryRoutes(historyServices: HistoryServices) {
     authenticate("patient-interaction") {
         /**
          * this method gets a request for adding a medical history
@@ -24,10 +24,20 @@ fun Route.patientHistoryRoutes(patientServices: PatientServices) {
             }
             try {
                 val patientId = call.principal<Patient>()!!.patient_id
-                patientServices.addPatientHistory(request, patientId)
+                historyServices.addPatientHistory(request, patientId)
                 call.respond(ServerResponse(true, "Medical history added"))
             } catch (e: Exception) {
                 call.respond(ServerResponse(false, "Unable to add patient history"))
+            }
+        }
+
+        get("patient/history") {
+            try {
+                val patientId = call.principal<Patient>()!!.patient_id
+                val history = historyServices.findPatientHistory(patientId)
+                call.respond(ServerResponse(true, "Medical History", history))
+            } catch (e: Exception) {
+                call.respond(ServerResponse(false, "Unable to get patient history"))
             }
         }
     }

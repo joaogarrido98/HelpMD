@@ -3,10 +3,8 @@ package com.example.services
 import com.example.database.DatabaseManager
 import com.example.entities.ActivationTable
 import com.example.entities.DoctorTable
-import com.example.entities.PatientHistoryTable
 import com.example.entities.PatientTable
 import com.example.models.Activation
-import com.example.models.AddPatientHistoryRequest
 import com.example.models.Patient
 import com.example.models.PatientRegisterRequest
 import org.jetbrains.exposed.sql.*
@@ -76,27 +74,6 @@ class PatientServices {
             }.groupBy(DoctorTable.doctor_id).first()[DoctorTable.doctor_id]
         }
     }
-
-    /**
-     * Add medical history to a specific patient
-     * @param patientId holds patient id to be inserted to
-     * @param patientHistory holds the data to be inserted
-     */
-    suspend fun addPatientHistory(patientHistory: AddPatientHistoryRequest, patientId: Int) {
-        db.query {
-            PatientHistoryTable.insert {
-                it[patient_id] = patientId
-                it[patient_allergies] = patientHistory.patient_allergies
-                it[patient_diseases] = patientHistory.patient_diseases
-                it[patient_family] = patientHistory.patient_family
-                it[patient_lifestyle] = patientHistory.patient_lifestyle
-                it[patient_vaccines] = patientHistory.patient_vaccines
-                it[patient_blood] = patientHistory.patient_blood
-                it[patient_hospitalized] = patientHistory.patient_hospitalized
-            }
-        }
-    }
-
 
     /**
      * query to find a row in activation table from the activation code
