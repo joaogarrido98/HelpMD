@@ -23,7 +23,6 @@ fun Route.patientHistoryRoutes(patientServices: PatientServices) {
                 return@post
             }
             try {
-                //if already exists dont let it put there
                 val patientId = call.principal<Patient>()!!.patient_id
                 patientServices.addPatientHistory(request, patientId)
                 call.respond(ServerResponse(true, "Medical history added"))

@@ -2,6 +2,7 @@ package com.example.services
 
 import com.example.database.DatabaseManager
 import com.example.entities.ActivationTable
+import com.example.entities.DoctorTable
 import com.example.entities.PatientHistoryTable
 import com.example.entities.PatientTable
 import com.example.models.Activation
@@ -9,6 +10,7 @@ import com.example.models.AddPatientHistoryRequest
 import com.example.models.Patient
 import com.example.models.PatientRegisterRequest
 import org.jetbrains.exposed.sql.*
+import org.jetbrains.exposed.sql.SqlExpressionBuilder.plus
 import java.time.LocalDate
 
 /**
@@ -32,8 +34,11 @@ class PatientServices {
 
     /**
      * Add a new patient to the database
+     * add activation code to database
+     * update doctor count of patients
      * @param patient holds a Patient register object
      * @param code holds the code to be inserted
+     * @param doctor holds the id of the doctor to be inserted in the patients table
      */
     suspend fun addPatient(patient: PatientRegisterRequest, code: String, doctor: Int) {
         db.query {
@@ -53,9 +58,24 @@ class PatientServices {
                 it[activation_code] = code
                 it[patient_email] = patient.patient_email
             }
+            DoctorTable.update(where = { DoctorTable.doctor_id eq doctor }) {
+                it.update(doctor_patients_count, doctor_patients_count + 1)
+            }
         }
     }
 
+    /**
+     * Get the id of the doctor that has the smallest number of patients
+     * and that has the training or not of sign language
+     * @param isDeaf holds the value true or false if patient is deaf or not
+     */
+    suspend fun assignDoctor(isDeaf: Boolean): Int {
+        return db.query {
+            DoctorTable.slice(DoctorTable.doctor_patients_count.min(), DoctorTable.doctor_id).select {
+                DoctorTable.doctor_sign_language.eq(isDeaf)
+            }.groupBy(DoctorTable.doctor_id).first()[DoctorTable.doctor_id]
+        }
+    }
 
     /**
      * Add medical history to a specific patient

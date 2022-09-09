@@ -64,7 +64,7 @@ fun Route.patientRoutes(patientServices: PatientServices) {
             }
             request.patient_password = HashingUtils.hash(request.patient_password)
             val code = ProjectUtils.generateRandomCode()
-            val doctor = getDoctor(request.patient_deaf)
+            val doctor = patientServices.assignDoctor(request.patient_deaf)
             patientServices.addPatient(request, code, doctor)
             MessageUtils.sendRegistrationEmail(request.patient_email, code)
             call.respond(ServerResponse(true, "Account created"))
@@ -159,12 +159,6 @@ fun Route.patientRoutes(patientServices: PatientServices) {
         }
 
     }
-}
-
-
-fun getDoctor(patientDeaf: Boolean): Int {
-    val doctor = 1
-    return doctor
 }
 
 /**
