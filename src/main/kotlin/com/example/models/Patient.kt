@@ -18,7 +18,8 @@ data class Patient(
     val patient_gender: String,
     val patient_password: String,
     val patient_active: Boolean,
-    val patient_deaf: Boolean
+    val patient_deaf: Boolean,
+    val patient_doctor: Int
 ) : Principal
 
 

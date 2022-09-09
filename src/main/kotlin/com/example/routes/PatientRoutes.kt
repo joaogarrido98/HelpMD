@@ -64,7 +64,8 @@ fun Route.patientRoutes(patientServices: PatientServices) {
             }
             request.patient_password = HashingUtils.hash(request.patient_password)
             val code = ProjectUtils.generateRandomCode()
-            patientServices.addPatient(request, code)
+            val doctor = getDoctor(request.patient_deaf)
+            patientServices.addPatient(request, code, doctor)
             MessageUtils.sendRegistrationEmail(request.patient_email, code)
             call.respond(ServerResponse(true, "Account created"))
         } catch (e: Exception) {
@@ -156,7 +157,14 @@ fun Route.patientRoutes(patientServices: PatientServices) {
                 call.respond(ServerResponse(false, "Unable to update password"))
             }
         }
+
     }
+}
+
+
+fun getDoctor(patientDeaf: Boolean): Int {
+    val doctor = 1
+    return doctor
 }
 
 /**

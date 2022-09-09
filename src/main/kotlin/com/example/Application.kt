@@ -2,6 +2,7 @@ package com.example
 
 import com.example.database.DatabaseManager
 import com.example.routes.doctorRoutes
+import com.example.routes.patientHistoryRoutes
 import com.example.routes.patientRoutes
 import com.example.services.DoctorServices
 import com.example.services.PatientServices
@@ -46,15 +47,30 @@ fun Application.module() {
             verifier(JwtManager.verifier)
             validate {
                 val payload = it.payload
-                val patient_email = payload.getClaim("patient_email").asString()
-                val patient = patientServices.findPatientByEmail(patient_email)
+                val patientEmail = payload.getClaim("patient_email").asString()
+                val patient = patientServices.findPatientByEmail(patientEmail)
                 patient
+            }
+        }
+
+        /**
+         * create patient authentication path with patient email validation
+         */
+        jwt("doctor-interaction") {
+            realm = System.getenv("JWT_REALM")
+            verifier(JwtManager.verifier)
+            validate {
+                val payload = it.payload
+                val doctorId = payload.getClaim("doctor_id").asInt()
+                val doctor = doctorServices.findDoctorById(doctorId)
+                doctor
             }
         }
     }
 
     routing {
         patientRoutes(patientServices)
+        patientHistoryRoutes(patientServices)
         doctorRoutes(doctorServices)
     }
 }

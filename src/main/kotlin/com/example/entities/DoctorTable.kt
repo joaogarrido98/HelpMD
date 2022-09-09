@@ -11,9 +11,7 @@ object DoctorTable : Table("Doctor") {
     val doctor_email = varchar("doctor_email", 500).uniqueIndex("idx_doctor_email")
     val doctor_password = varchar("doctor_password", 500)
     val doctor_sign_language = bool("doctor_sign_language").default(false)
-    // in case i can use this keep here, need to see how im gonna do, if i can use a sample and if I can use a "fake"
-    // doctor
-    // val doctor_signature = varchar("doctor_signature", 1000).uniqueIndex("idx_doctor_signature")
+    val doctor_patients_count = integer("doctor_patients_count")
 
     override val primaryKey = PrimaryKey(doctor_id, name = "PK_DOCTOR")
 }

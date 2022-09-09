@@ -17,6 +17,7 @@ object PatientTable : Table("Patient"){
     val patient_password = varchar("patient_password", 500)
     val patient_active = bool("patient_active").default(false)
     val patient_deaf = bool("patient_deaf").default(false)
+    val patient_doctor = integer("patient_doctor").references(DoctorTable.doctor_id)
 
     override val primaryKey = PrimaryKey(patient_id, name = "PK_PatientTable")
 }
