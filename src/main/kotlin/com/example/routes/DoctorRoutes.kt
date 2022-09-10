@@ -39,4 +39,19 @@ fun Route.doctorRoutes(doctorServices: DoctorServices) {
         }
     }
 
+
+    post("doctor/register") {
+        val request = call.receive<DoctorRegisterRequest>()
+        if (!request.isValid()) {
+            call.respond(ServerResponse(false, "Bad Request"))
+            return@post
+        }
+        try {
+            request.doctor_password = HashingUtils.hash(request.doctor_password)
+            doctorServices.addDoctor(request)
+            call.respond(ServerResponse(true, "Account created"))
+        } catch (e: Exception) {
+            call.respond(ServerResponse(false, "Unable to create account"))
+        }
+    }
 }
