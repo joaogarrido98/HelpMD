@@ -1,9 +1,11 @@
 package com.example
 
 import com.example.database.DatabaseManager
+import com.example.routes.activeDoctorRoutes
 import com.example.routes.doctorRoutes
 import com.example.routes.patientHistoryRoutes
 import com.example.routes.patientRoutes
+import com.example.services.ActiveDoctorServices
 import com.example.services.DoctorServices
 import com.example.services.HistoryServices
 import com.example.services.PatientServices
@@ -27,6 +29,7 @@ fun Application.module() {
     val patientServices = PatientServices()
     val doctorServices = DoctorServices()
     val historyServices = HistoryServices()
+    val activeDoctorServices = ActiveDoctorServices()
 
     install(DefaultHeaders)
 
@@ -74,5 +77,6 @@ fun Application.module() {
         patientRoutes(patientServices)
         patientHistoryRoutes(historyServices)
         doctorRoutes(doctorServices)
+        activeDoctorRoutes(activeDoctorServices)
     }
 }

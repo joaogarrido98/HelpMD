@@ -13,7 +13,7 @@ object MessageUtils {
      * get env variables for email
      */
     private val fromEmail: String = System.getenv("FROM_EMAIL")
-    private val apiKey: String = System.getenv("SENDGRID_API_KEY")
+    private val apiKey: String = System.getenv("SENDGRID_KEY")
 
     /**
      * create an email for the new account password
