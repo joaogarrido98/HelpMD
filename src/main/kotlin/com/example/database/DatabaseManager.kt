@@ -18,7 +18,7 @@ object DatabaseManager {
      * connection to the database and creation of the tables
      */
     fun init() {
-        Database.connect(hikariTesting())
+        Database.connect(hikari())
         transaction {
             SchemaUtils.create(PatientTable)
             SchemaUtils.create(DoctorTable)
@@ -65,16 +65,7 @@ object DatabaseManager {
         return HikariDataSource(config)
     }
 
-    private fun hikariTesting(): HikariDataSource {
-        val config = HikariConfig()
-        config.driverClassName = "org.postgresql.Driver"
-        config.jdbcUrl = "jdbc:postgresql://localhost/HelpMD?user=postgres&password=postgres"
-        config.maximumPoolSize = 3
-        config.isAutoCommit = false
-        config.transactionIsolation = "TRANSACTION_REPEATABLE_READ"
-        config.validate()
-        return HikariDataSource(config)
-    }
+
 
     /**
      * function that takes a function as parameter and executes it inside a coroutine
