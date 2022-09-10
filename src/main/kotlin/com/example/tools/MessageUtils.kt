@@ -39,7 +39,7 @@ object MessageUtils {
         content.type = "text/html"
         content.value = "HelpMD"
         mail.addContent(content)
-        mail.setTemplateId("d-392e86ee9350453fa6063beec6e47ec3")
+        mail.setTemplateId("d-4bad812585644ceb9cbcb6db4b51dea3")
         sendEmail(mail)
     }
 
