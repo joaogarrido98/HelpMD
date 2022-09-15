@@ -136,7 +136,7 @@ fun Route.patientRoutes(patientServices: PatientServices) {
     /**
      * This method deactivates the user=
      */
-    get("patient/activate") {
+    get("patient/active") {
         val email = "joao.melo.garrido@gmail.com"
         try {
             patientServices.active(email)

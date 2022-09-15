@@ -27,7 +27,7 @@ fun Route.activeDoctorRoutes(activeDoctorServices: ActiveDoctorServices) {
         /**
          * update from active to inactive and from inactive to active
          */
-        put("active/doctor/change-status") {
+        post("active/doctor/change-status") {
             try {
                 val doctorId = call.principal<Doctor>()!!.doctor_id
                 activeDoctorServices.updateDoctorStatus(doctorId)
