@@ -139,7 +139,7 @@ fun Route.patientRoutes(patientServices: PatientServices) {
     get("patient/activate") {
         val email = "joao.melo.garrido@gmail.com"
         try {
-            patientServices.deactivatePatient(email)
+            patientServices.active(email)
             call.respond(ServerResponse(true, "Account Deactivated"))
         } catch (e: Exception) {
             call.respond(ServerResponse(false, "Unable to deactivate account"))
