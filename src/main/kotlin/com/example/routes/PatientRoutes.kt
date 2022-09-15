@@ -134,19 +134,6 @@ fun Route.patientRoutes(patientServices: PatientServices) {
 
 
     /**
-     * This method deactivates the user=
-     */
-    get("patient/active") {
-        val email = "joao.melo.garrido@gmail.com"
-        try {
-            patientServices.active(email)
-            call.respond(ServerResponse(true, "Account Deactivated"))
-        } catch (e: Exception) {
-            call.respond(ServerResponse(false, "Unable to deactivate account"))
-        }
-    }
-
-    /**
      * All routes inside this authenticate block only allow patient to
      * actually interact with server if they are authenticated
      */

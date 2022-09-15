@@ -122,18 +122,6 @@ class PatientServices {
 
 
     /**
-     * query to update a row in patient table from the deactivated to activated
-     * @param email holds the email to which account to be activated
-     */
-    suspend fun active(email: String) {
-        db.query {
-            PatientTable.update(where = { PatientTable.patient_email eq email }) {
-                it[patient_active] = true
-            }
-        }
-    }
-
-    /**
      * update the password of a patient
      * @param email holds the email of the patient that needs to be updated
      * @param newPassword holds the new password
