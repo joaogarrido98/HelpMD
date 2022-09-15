@@ -71,14 +71,15 @@ data class PatientRecoverPasswordRequest(
 }
 
 data class PatientChangePasswordRequest(
-    val patient_password: String
+    val patient_password: String,
+    val patient_old_password : String
 ) {
     /**
      * Validates the change password request
      * @return true or false depending on if all data needed is present
      */
     fun isValid(): Boolean {
-        return this.patient_password.isNotEmpty()
+        return !(this.patient_password.isEmpty() || this.patient_old_password.isEmpty())
     }
 }
 

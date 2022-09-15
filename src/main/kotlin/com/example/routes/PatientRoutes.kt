@@ -183,10 +183,18 @@ fun Route.patientRoutes(patientServices: PatientServices) {
                 return@post
             }
             try {
-                val email = call.principal<Patient>()!!.patient_email
-                val password = HashingUtils.hash(request.patient_password)
-                patientServices.updatePassword(email, password)
-                call.respond(ServerResponse(true, "Password Updated"))
+                val patient = call.principal<Patient>()
+                if (patient != null) {
+                    if (patient.patient_password == HashingUtils.hash(request.patient_old_password)) {
+                        val password = HashingUtils.hash(request.patient_password)
+                        patientServices.updatePassword(patient.patient_email, password)
+                        call.respond(ServerResponse(true, "Password Updated"))
+                        return@post
+                    }
+                    call.respond(ServerResponse(false, "Old password does not match"))
+                    return@post
+                }
+                call.respond(ServerResponse(false, "Unable to update password"))
             } catch (e: Exception) {
                 call.respond(ServerResponse(false, "Unable to update password"))
             }
@@ -198,9 +206,13 @@ fun Route.patientRoutes(patientServices: PatientServices) {
          */
         post("patient/deactivate") {
             try {
-                val email = call.principal<Patient>()!!.patient_email
-                patientServices.deactivatePatient(email)
-                call.respond(ServerResponse(true, "Account Deactivated"))
+                val patient = call.principal<Patient>()
+                if (patient != null) {
+                    patientServices.deactivatePatient(patient.patient_email)
+                    call.respond(ServerResponse(true, "Account Deactivated"))
+                    return@post
+                }
+                call.respond(ServerResponse(false, "Unable to deactivate account"))
             } catch (e: Exception) {
                 call.respond(ServerResponse(false, "Unable to deactivate account"))
             }
