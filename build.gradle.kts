@@ -47,6 +47,7 @@ dependencies {
     testImplementation("org.jetbrains.kotlin:kotlin-test:$kotlin_version")
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version")
     implementation("io.ktor:ktor-client-content-negotiation:$ktor_version")
+    implementation("io.ktor:ktor-server-html-builder:$ktor_version")
 
     //third party
     implementation("com.sendgrid:sendgrid-java:4.9.3")

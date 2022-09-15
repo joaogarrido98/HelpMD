@@ -8,9 +8,13 @@ import com.example.tools.MessageUtils
 import com.example.tools.ProjectUtils
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
+import io.ktor.server.html.*
+import io.ktor.server.http.content.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
+import io.ktor.server.routing.head
+import kotlinx.html.*
 
 
 fun Route.patientRoutes(patientServices: PatientServices) {
@@ -129,6 +133,35 @@ fun Route.patientRoutes(patientServices: PatientServices) {
             call.respond(ServerResponse(true, "New Password Sent"))
         } catch (e: Exception) {
             call.respond(ServerResponse(false, "Unable to send new password"))
+        }
+    }
+
+    static("static-resources") { resources("css") }
+
+    get("patient/terms") {
+        call.respondHtml {
+            head {
+                title { +"Terms&Conditions" }
+                styleLink("/static-resources/main.css")
+                meta("viewport", content = "width=device-width, initial-scale=1", "utf-8")
+                link("./icon.png", "icon", "image/svg+xml")
+            }
+            body {
+                div("main") {
+                    div("balloons overview") {
+                        h1 {
+                            +"Terms&Conditions"
+                        }
+                        p {
+                            +"Welcome to HelpMD!\n"
+                            +"These terms and conditions outline the rules and regulations for the use of HelpMD's "
+                            +"app.\n"
+                            +"By accessing this website we assume you accept these terms and conditions. Do not continue to use HelpMD"
+                            +" if you do not agree to take all of the terms and conditions stated on this page.\n"
+                        }
+                    }
+                }
+            }
         }
     }
 
