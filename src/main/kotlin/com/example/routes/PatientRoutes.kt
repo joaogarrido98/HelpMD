@@ -69,7 +69,7 @@ fun Route.patientRoutes(patientServices: PatientServices) {
             val doctor = patientServices.assignDoctor(request.patient_deaf)
             patientServices.addPatient(request, code, doctor)
             MessageUtils.sendRegistrationEmail(request.patient_email, code)
-            call.respond(ServerResponse(true, "Account created"))
+            call.respond(ServerResponse(true, "Account created, please check your email"))
         } catch (e: Exception) {
             call.respond(ServerResponse(false, "Unable to create account"))
         }
@@ -110,7 +110,6 @@ fun Route.patientRoutes(patientServices: PatientServices) {
      * to him through email, updating it and hashing it at the same time
      * in the database
      */
-    // Todo can be changed into a page online that changes the password ot a new one that we want v2
     post("patient/password/recover") {
         val request = call.receive<PatientRecoverPasswordRequest>()
         if (!request.isValid()) {
@@ -133,6 +132,19 @@ fun Route.patientRoutes(patientServices: PatientServices) {
         }
     }
 
+
+    /**
+     * This method deactivates the user=
+     */
+    get("patient/activate") {
+        val email = "joao.melo.garrido@gmail.com"
+        try {
+            patientServices.deactivatePatient(email)
+            call.respond(ServerResponse(true, "Account Deactivated"))
+        } catch (e: Exception) {
+            call.respond(ServerResponse(false, "Unable to deactivate account"))
+        }
+    }
 
     /**
      * All routes inside this authenticate block only allow patient to
@@ -160,6 +172,19 @@ fun Route.patientRoutes(patientServices: PatientServices) {
             }
         }
 
+
+        /**
+         * This method deactivates the user=
+         */
+        post("patient/deactivate") {
+            try {
+                val email = call.principal<Patient>()!!.patient_email
+                patientServices.deactivatePatient(email)
+                call.respond(ServerResponse(true, "Account Deactivated"))
+            } catch (e: Exception) {
+                call.respond(ServerResponse(false, "Unable to deactivate account"))
+            }
+        }
     }
 }
 
