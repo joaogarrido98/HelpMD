@@ -27,6 +27,8 @@ fun Route.activeDoctorRoutes(activeDoctorServices: ActiveDoctorServices) {
          * if active remove doctor from active and send success message
          */
         post("active/doctor/join/{doctor}") {
+            println("hereeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee")
+            println(call.parameters["doctor"]?.toInt())
             try {
                 val doctor = call.parameters["doctor"]?.toInt()
                 print(doctor?.let { it1 -> activeDoctorServices.isDoctorActive(it1) })
