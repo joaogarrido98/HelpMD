@@ -29,6 +29,7 @@ fun Route.activeDoctorRoutes(activeDoctorServices: ActiveDoctorServices) {
         post("active/doctor/join/{doctor}") {
             try {
                 val doctor = call.parameters["doctor"]?.toInt()
+                print(doctor?.let { it1 -> activeDoctorServices.isDoctorActive(it1) })
                 if (doctor?.let { it1 -> activeDoctorServices.isDoctorActive(it1) } == null) {
                     call.respond(ServerResponse(false, "Doctor is currently in-call"))
                     return@post
