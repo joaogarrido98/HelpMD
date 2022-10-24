@@ -4,10 +4,7 @@ import com.example.database.DatabaseManager
 import com.example.entities.ActiveDoctorTable
 import com.example.entities.DoctorTable
 import com.example.models.Doctor
-import org.jetbrains.exposed.sql.ResultRow
-import org.jetbrains.exposed.sql.deleteWhere
-import org.jetbrains.exposed.sql.insert
-import org.jetbrains.exposed.sql.selectAll
+import org.jetbrains.exposed.sql.*
 
 class ActiveDoctorServices {
     val db = DatabaseManager
@@ -29,6 +26,15 @@ class ActiveDoctorServices {
             ActiveDoctorTable.insert {
                 it[doctor_id] = doctorID
             }
+        }
+    }
+
+    /**
+     * check if doctor is active in db, query for resilience of the db
+     */
+    suspend fun isDoctorActive(doctorID: Int) {
+        db.query {
+            ActiveDoctorTable.select { ActiveDoctorTable.doctor_id.eq(doctorID) }.singleOrNull()
         }
     }
 
