@@ -32,7 +32,7 @@ class ActiveDoctorServices {
     /**
      * check if doctor is active in db, query for resilience of the db
      */
-    suspend fun isDoctorActive(doctorID: Int) {
+    suspend fun isDoctorActive(doctorID: Int): ResultRow? {
         return db.query {
             ActiveDoctorTable.select { ActiveDoctorTable.doctor_id.eq(doctorID) }.singleOrNull()
         }
@@ -51,7 +51,6 @@ class ActiveDoctorServices {
         }
         return doctorList
     }
-
 
     /**
      * This method transforms a database row into a Doctor object

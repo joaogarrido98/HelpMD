@@ -29,14 +29,17 @@ fun Route.activeDoctorRoutes(activeDoctorServices: ActiveDoctorServices) {
         post("active/doctor/join/{doctor}") {
             try {
                 val doctor = call.parameters["doctor"]?.toInt()
-                println("hereeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee")
-                println(doctor?.let { it1 -> activeDoctorServices.isDoctorActive(it1) })
-                if (doctor?.let { it1 -> activeDoctorServices.isDoctorActive(it1) } == null) {
-                    call.respond(ServerResponse(false, "Doctor is currently in-call"))
-                    return@post
+                if(doctor != null){
+                    print(activeDoctorServices.isDoctorActive(doctor).toString())
+                    if (activeDoctorServices.isDoctorActive(doctor) == null) {
+                        call.respond(ServerResponse(false, "Doctor is currently in-call"))
+                        return@post
+                    }
+                    activeDoctorServices.deactivateDoctorStatus(doctor)
+                    call.respond(ServerResponse(true, "Success"))
+                }else{
+                    call.respond(ServerResponse(false, "No doctor"))
                 }
-                activeDoctorServices.deactivateDoctorStatus(doctor)
-                call.respond(ServerResponse(true, "Success"))
             } catch (e: Exception) {
                 call.respond(ServerResponse(false, "Unable to join this doctor"))
             }
