@@ -33,7 +33,7 @@ class ActiveDoctorServices {
      * check if doctor is active in db, query for resilience of the db
      */
     suspend fun isDoctorActive(doctorID: Int) {
-        db.query {
+        return db.query {
             ActiveDoctorTable.select { ActiveDoctorTable.doctor_id.eq(doctorID) }.singleOrNull()
         }
     }
