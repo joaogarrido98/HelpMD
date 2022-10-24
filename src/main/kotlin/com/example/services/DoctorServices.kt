@@ -28,17 +28,12 @@ class DoctorServices {
 
     suspend fun addDoctor(doctor: DoctorRegisterRequest) {
         db.query {
-            val inserted = DoctorTable.insert {
+            DoctorTable.insert {
                 it[doctor_email] = doctor.doctor_email
                 it[doctor_name] = doctor.doctor_name
                 it[doctor_password] = doctor.doctor_password
                 it[doctor_patients_count] = 0
                 it[doctor_sign_language] = doctor.doctor_sign_language
-            }.resultedValues!!.first()
-            val doctorId = rowToDoctor(inserted).doctor_id
-            ActiveDoctorTable.insert {
-                it[doctor_id] = doctorId
-                it[doctor_active] = false
             }
         }
     }

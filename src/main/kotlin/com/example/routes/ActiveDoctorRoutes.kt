@@ -23,15 +23,27 @@ fun Route.activeDoctorRoutes(activeDoctorServices: ActiveDoctorServices) {
         }
     }
 
-
+    /**
+     * update from inactive to active
+     */
     authenticate("doctor-interaction") {
+        post("active/doctor/activate") {
+            try {
+                val doctorId = call.principal<Doctor>()!!.doctor_id
+                activeDoctorServices.activateDoctorStatus(doctorId)
+                call.respond(ServerResponse(true, "Status updated"))
+            } catch (e: Exception) {
+                call.respond(ServerResponse(false, "Unable to change doctor status"))
+            }
+        }
+
         /**
          * update from active to inactive and from inactive to active
          */
-        post("active/doctor/change-status") {
+        post("active/doctor/deactivate") {
             try {
                 val doctorId = call.principal<Doctor>()!!.doctor_id
-                activeDoctorServices.updateDoctorStatus(doctorId)
+                activeDoctorServices.deactivateDoctorStatus(doctorId)
                 call.respond(ServerResponse(true, "Doctor status updated"))
             } catch (e: Exception) {
                 call.respond(ServerResponse(false, "Unable to change doctor status"))

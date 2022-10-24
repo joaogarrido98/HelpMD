@@ -148,9 +148,36 @@ fun Route.patientRoutes(patientServices: PatientServices) {
             }
             body {
                 div("main") {
-                    div("balloons overview") {
+                    div {
                         h1 {
                             +"Terms&Conditions"
+                        }
+                        p {
+                            +"Welcome to HelpMD!\n"
+                            +"These terms and conditions outline the rules and regulations for the use of HelpMD's "
+                            +"app.\n"
+                            +"By accessing this website we assume you accept these terms and conditions. Do not continue to use HelpMD"
+                            +" if you do not agree to take all of the terms and conditions stated on this page.\n"
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    get("patient/privacy") {
+        call.respondHtml {
+            head {
+                title { +"Privacy Policy" }
+                styleLink("/static-resources/main.css")
+                meta("viewport", content = "width=device-width, initial-scale=1", "utf-8")
+                link("./icon.png", "icon", "image/svg+xml")
+            }
+            body {
+                div("main") {
+                    div {
+                        h1 {
+                            +"Privacy Policy"
                         }
                         p {
                             +"Welcome to HelpMD!\n"

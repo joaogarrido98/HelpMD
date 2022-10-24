@@ -4,8 +4,10 @@ import com.example.database.DatabaseManager
 import com.example.entities.ActiveDoctorTable
 import com.example.entities.DoctorTable
 import com.example.models.Doctor
-import org.jetbrains.exposed.sql.*
-import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
+import org.jetbrains.exposed.sql.ResultRow
+import org.jetbrains.exposed.sql.deleteWhere
+import org.jetbrains.exposed.sql.insert
+import org.jetbrains.exposed.sql.selectAll
 
 class ActiveDoctorServices {
     val db = DatabaseManager
@@ -13,10 +15,19 @@ class ActiveDoctorServices {
     /**
      * activate or deactivate a doctor on active doctor table
      */
-    suspend fun updateDoctorStatus(doctor_id: Int) {
+    suspend fun deactivateDoctorStatus(doctor_id: Int) {
         db.query {
-            ActiveDoctorTable.update(where = { ActiveDoctorTable.doctor_id eq doctor_id }) {
-                it[doctor_active] = not(doctor_active)
+            ActiveDoctorTable.deleteWhere { ActiveDoctorTable.doctor_id eq doctor_id }
+        }
+    }
+
+    /**
+     * activate or deactivate a doctor on active doctor table
+     */
+    suspend fun activateDoctorStatus(doctorID: Int) {
+        db.query {
+            ActiveDoctorTable.insert {
+                it[doctor_id] = doctorID
             }
         }
     }
@@ -27,7 +38,7 @@ class ActiveDoctorServices {
     suspend fun getActiveDoctors(): List<Doctor> {
         val doctorList = mutableListOf<Doctor>()
         db.query {
-            (ActiveDoctorTable innerJoin DoctorTable).select { ActiveDoctorTable.doctor_active.eq(true) }.limit(20)
+            (ActiveDoctorTable innerJoin DoctorTable).selectAll().limit(20)
                 .map {
                     doctorList.add(rowToDoctor(it))
                 }

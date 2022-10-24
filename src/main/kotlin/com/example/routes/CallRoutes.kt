@@ -12,23 +12,23 @@ import kotlin.collections.LinkedHashSet
 fun Route.callRoutes() {
     val connections = Collections.synchronizedSet<WebsocketUtil?>(LinkedHashSet())
 
-    webSocket("oncall/{doctor}/{type}") {
+    webSocket("on-call/{doctor}/{type}") {
         val doctor = call.parameters["doctor"]?.toInt()
         val type = call.parameters["type"].toBoolean()
+        val sessionID = UUID.randomUUID()
         val thisConnection = WebsocketUtil(this, doctor, type)
-        connections += thisConnection
         try {
-            while (true) {
+            if (connections.count() == 2) {
+                thisConnection.session.sendSerialized(ServerResponse(false, "Doctor is currently unavailable"))
+                return@webSocket
+            }
+            if (!type) {
+                connections.first().session.sendSerialized(ServerResponse(true, "Patient has joined the call"))
+            }
+            connections += thisConnection
+            while (true){
                 val patient = receiveDeserialized<Patient>()
-                //initialize webrtc
-                connections.forEach {
-                    if(!it.type){
-                        it.session.sendSerialized(ServerResponse(true, ""))
-                    }
-                    if(it.type){
-                        it.session.sendSerialized(ServerResponse(true, "New patient", patient))
-                    }
-                }
+                //initialiaze webrtc
             }
         } catch (e: Exception) {
             send(e.toString())
