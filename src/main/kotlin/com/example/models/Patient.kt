@@ -82,5 +82,3 @@ data class PatientChangePasswordRequest(
         return !(this.patient_password.isEmpty() || this.patient_old_password.isEmpty())
     }
 }
-
-

@@ -36,7 +36,6 @@ class DoctorServices {
                 it[doctor_sign_language] = doctor.doctor_sign_language
             }.resultedValues!!.first()
             val doctorId = rowToDoctor(inserted).doctor_id
-            println(doctorId)
             ActiveDoctorTable.insert {
                 it[doctor_id] = doctorId
                 it[doctor_active] = false

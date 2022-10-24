@@ -1,10 +1,7 @@
 package com.example
 
 import com.example.database.DatabaseManager
-import com.example.routes.activeDoctorRoutes
-import com.example.routes.doctorRoutes
-import com.example.routes.patientHistoryRoutes
-import com.example.routes.patientRoutes
+import com.example.routes.*
 import com.example.services.ActiveDoctorServices
 import com.example.services.DoctorServices
 import com.example.services.HistoryServices
@@ -20,6 +17,8 @@ import io.ktor.server.auth.jwt.*
 import io.ktor.server.plugins.contentnegotiation.*
 import io.ktor.server.plugins.defaultheaders.*
 import io.ktor.server.routing.*
+import io.ktor.server.websocket.*
+import java.time.Duration
 
 fun main(args: Array<String>): Unit = io.ktor.server.netty.EngineMain.main(args)
 
@@ -41,6 +40,14 @@ fun Application.module() {
                 indentObjectsWith(DefaultIndenter("  ", "\n"))
             })
         }
+    }
+
+    install(WebSockets) {
+        pingPeriod = Duration.ofSeconds(15)
+        timeout = Duration.ofSeconds(15)
+        maxFrameSize = Long.MAX_VALUE
+        masking = false
+        contentConverter = JacksonWebsocketContentConverter()
     }
 
     install(Authentication) {
@@ -78,5 +85,6 @@ fun Application.module() {
         patientHistoryRoutes(historyServices)
         doctorRoutes(doctorServices)
         activeDoctorRoutes(activeDoctorServices)
+        callRoutes()
     }
 }

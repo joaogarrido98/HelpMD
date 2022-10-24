@@ -15,7 +15,8 @@ fun Route.activeDoctorRoutes(activeDoctorServices: ActiveDoctorServices) {
          */
         get("active/doctor") {
             try {
-
+                val doctorList = activeDoctorServices.getActiveDoctors()
+                call.respond(ServerResponse(true, "On call Doctors", doctorList))
             } catch (e: Exception) {
                 call.respond(ServerResponse(false, "Unable to get active doctors"))
             }
