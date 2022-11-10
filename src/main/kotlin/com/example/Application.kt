@@ -2,10 +2,7 @@ package com.example
 
 import com.example.database.DatabaseManager
 import com.example.routes.*
-import com.example.services.ActiveDoctorServices
-import com.example.services.DoctorServices
-import com.example.services.HistoryServices
-import com.example.services.PatientServices
+import com.example.services.*
 import com.example.tools.JwtManager
 import com.fasterxml.jackson.core.util.DefaultIndenter
 import com.fasterxml.jackson.core.util.DefaultPrettyPrinter
@@ -29,6 +26,7 @@ fun Application.module() {
     val doctorServices = DoctorServices()
     val historyServices = HistoryServices()
     val activeDoctorServices = ActiveDoctorServices()
+    val prescriptionsServices = PrescriptionsServices()
 
     install(DefaultHeaders)
 
@@ -86,5 +84,6 @@ fun Application.module() {
         doctorRoutes(doctorServices)
         activeDoctorRoutes(activeDoctorServices)
         callRoutes()
+        prescriptionsRoutes(prescriptionsServices)
     }
 }

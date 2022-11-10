@@ -72,7 +72,7 @@ data class PatientRecoverPasswordRequest(
 
 data class PatientChangePasswordRequest(
     val patient_password: String,
-    val patient_old_password : String
+    val patient_old_password: String
 ) {
     /**
      * Validates the change password request

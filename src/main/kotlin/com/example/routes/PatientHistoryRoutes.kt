@@ -31,6 +31,9 @@ fun Route.patientHistoryRoutes(historyServices: HistoryServices) {
             }
         }
 
+        /**
+         * this method finds a returns the patient history for the patient that its asking
+         */
         get("patient/history") {
             try {
                 val patientId = call.principal<Patient>()!!.patient_id

@@ -26,6 +26,10 @@ class DoctorServices {
     }
 
 
+    /**
+     * register a doctor into the database and initialize patient count as 0
+     * @param doctor holds a doctor register request object
+     */
     suspend fun addDoctor(doctor: DoctorRegisterRequest) {
         db.query {
             DoctorTable.insert {

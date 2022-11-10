@@ -5,6 +5,7 @@ import com.example.models.ServerResponse
 import com.example.tools.WebsocketUtil
 import io.ktor.server.routing.*
 import io.ktor.server.websocket.*
+import io.ktor.server.websocket.*
 import io.ktor.websocket.*
 import java.util.*
 import kotlin.collections.LinkedHashSet
@@ -26,7 +27,7 @@ fun Route.callRoutes() {
                 connections.first().session.sendSerialized(ServerResponse(true, "Patient has joined the call"))
             }
             connections += thisConnection
-            while (true){
+            while (true) {
                 val patient = receiveDeserialized<Patient>()
                 //initialiaze webrtc
             }

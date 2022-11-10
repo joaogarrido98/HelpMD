@@ -40,6 +40,9 @@ fun Route.doctorRoutes(doctorServices: DoctorServices) {
     }
 
 
+    /**
+     * register a new doctor
+     */
     post("doctor/register") {
         val request = call.receive<DoctorRegisterRequest>()
         if (!request.isValid()) {
