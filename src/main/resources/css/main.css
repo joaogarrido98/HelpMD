@@ -1,0 +1,29 @@
+h1{
+    margin: 10px;
+    color: rgb(53, 110, 208, 1.0);
+}
+
+h2{
+    margin-top: 10px;
+    margin-left: 10px;
+    color: rgb(53, 110, 208, 1.0);
+}
+
+p{
+    margin-top: 10px;
+    margin-left: 10px;
+    color: black;
+}
+
+.handed{
+    color: firebrick;
+    font-weight: bold;
+    text-decoration: underline firebrick 2px;
+}
+
+
+.regular{
+    color: forestgreen;
+    font-weight: bold;
+    text-decoration: underline forestgreen 2px;
+}

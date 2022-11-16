@@ -21,7 +21,7 @@ object MessageUtils {
      * @param code holds the password
      */
     fun sendRegistrationEmail(email: String, code: String) {
-        //TODO FIX NO SUBJECT
+        ///TODO FIX NO SUBJECT
         val mail = Mail()
         val from = Email()
         from.email = fromEmail

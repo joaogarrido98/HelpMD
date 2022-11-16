@@ -75,7 +75,7 @@ class PrescriptionsServices {
 
 
     /**
-     * get list of regular prescriptions for a specific patient
+     * get list of one-off prescriptions for a specific patient
      */
     suspend fun getPrescriptions(patient: Int): List<Prescriptions> {
         val prescriptionList = mutableListOf<Prescriptions>()
