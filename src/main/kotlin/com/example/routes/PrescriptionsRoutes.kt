@@ -78,7 +78,7 @@ fun Route.prescriptionsRoutes(prescriptionsServices: PrescriptionsServices) {
             }
             call.respondHtml {
                 head {
-                    link(rel = "stylesheet", href = "../main.css", type = "text/css")
+                    link(rel = "stylesheet", href = "./resources/main.css", type = "text/css")
                 }
                 body {
                     h1{
