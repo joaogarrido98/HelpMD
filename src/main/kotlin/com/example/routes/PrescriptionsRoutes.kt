@@ -5,12 +5,15 @@ import com.example.services.PrescriptionsServices
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
 import io.ktor.server.html.*
+import io.ktor.server.http.content.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import kotlinx.html.*
 
 fun Route.prescriptionsRoutes(prescriptionsServices: PrescriptionsServices) {
+    static("static-resources") { resources("css") }
+
 
     authenticate("doctor-interaction") {
         /**
@@ -78,7 +81,9 @@ fun Route.prescriptionsRoutes(prescriptionsServices: PrescriptionsServices) {
             }
             call.respondHtml {
                 head {
-                    link(rel = "stylesheet", href = "./resources/main.css", type = "text/css")
+                    title { +"Prescription" }
+                    styleLink("/static-resources/main.css")
+                    meta("viewport", content = "width=device-width, initial-scale=1", "utf-8")
                 }
                 body {
                     h1{
