@@ -39,7 +39,7 @@ class PrescriptionsServices {
      */
     suspend fun findPrescription(prescriptionId: Int): Prescriptions? {
         return db.query {
-            PrescriptionsTable.select(where = PrescriptionsTable.prescription_id.eq(prescriptionId)).map {
+            (PrescriptionsTable innerJoin DoctorTable).select(where = PrescriptionsTable.prescription_id.eq(prescriptionId)).map {
                 rowToPrescriptions(it)
             }.singleOrNull()
         }
@@ -62,7 +62,7 @@ class PrescriptionsServices {
     suspend fun getPrescriptions(patient: Int): List<Prescriptions> {
         val prescriptionList = mutableListOf<Prescriptions>()
         db.query {
-            PrescriptionsTable.select { PrescriptionsTable.patient_id.eq(patient) }.map {
+            (PrescriptionsTable innerJoin DoctorTable).select { PrescriptionsTable.patient_id.eq(patient) }.map {
                 prescriptionList.add(rowToPrescriptions(it))
             }
         }
@@ -76,7 +76,7 @@ class PrescriptionsServices {
         return Prescriptions(
             patient_id = row[PrescriptionsTable.prescription_id],
             prescription_date = row[PrescriptionsTable.prescription_date].toString(),
-            prescription_doctor = row[PrescriptionsTable.prescription_doctor],
+            prescription_doctor = row[DoctorTable.doctor_name],
             prescription_id = row[PrescriptionsTable.prescription_id],
             prescription_dosage = row[PrescriptionsTable.prescription_dosage],
             prescription_medicine = row[PrescriptionsTable.prescription_medicine],

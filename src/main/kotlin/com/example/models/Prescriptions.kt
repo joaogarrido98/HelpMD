@@ -5,7 +5,7 @@ data class Prescriptions(
     val patient_id: Int,
     val prescription_date: String,
     val prescription_regular: Boolean,
-    val prescription_doctor: Int,
+    val prescription_doctor: String,
     val prescription_medicine: String,
     val prescription_dosage: String,
     val prescription_type : String
