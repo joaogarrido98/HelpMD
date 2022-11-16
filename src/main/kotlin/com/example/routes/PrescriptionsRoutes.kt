@@ -91,7 +91,7 @@ fun Route.prescriptionsRoutes(prescriptionsServices: PrescriptionsServices) {
                     }
                     if(prescription.prescription_used){
                         h2("handed"){
-                            +"This prescription has been handed already"
+                            +"This prescription has been handled already"
                         }
                     }
                     if(prescription.prescription_regular){
