@@ -41,11 +41,21 @@ fun Route.prescriptionsRoutes(prescriptionsServices: PrescriptionsServices) {
         /**
          * get all the prescriptions for a specific patient
          */
-        get("prescriptions"){
+        get("prescriptions/{type}"){
+            val prescriptionType = call.parameters["type"]
             try {
                 val patient = call.principal<Patient>()!!.patient_id
-                val prescriptions = prescriptionsServices.getPrescriptions(patient)
-                call.respond(ServerResponse(true,"Prescriptions", prescriptions))
+                if(prescriptionType == "regular"){
+                    val prescriptions = prescriptionsServices.getRegularPrescriptions(patient)
+                    call.respond(ServerResponse(true,"Prescriptions", prescriptions))
+                    return@get
+                }
+                if(prescriptionType == "once"){
+                    val prescriptions = prescriptionsServices.getPrescriptions(patient)
+                    call.respond(ServerResponse(true,"Prescriptions", prescriptions))
+                    return@get
+                }
+                call.respond(ServerResponse(false, "No prescriptions of this type"))
             }catch (e:Exception){
                 call.respond(ServerResponse(false, "Unable to get prescriptions"))
             }

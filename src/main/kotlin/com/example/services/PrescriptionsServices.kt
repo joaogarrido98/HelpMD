@@ -51,20 +51,40 @@ class PrescriptionsServices {
      */
     suspend fun deletePrescription(prescriptionId: Int) {
         db.query {
-            PrescriptionsTable.deleteWhere { PrescriptionsTable.prescription_id.eq(prescriptionId) }
+            PrescriptionsTable.update ({ PrescriptionsTable.prescription_id.eq(prescriptionId) }){
+                it[prescription_used] = true
+            }
         }
     }
 
 
     /**
-     * get list of prescriptions for a specific patient
+     * get list of regular prescriptions for a specific patient
+     */
+    suspend fun getRegularPrescriptions(patient: Int): List<Prescriptions> {
+        val prescriptionList = mutableListOf<Prescriptions>()
+        db.query {
+            (PrescriptionsTable innerJoin DoctorTable).select { PrescriptionsTable.patient_id.eq(patient) and
+                    PrescriptionsTable.prescription_regular.eq(true)}
+                .map {
+                prescriptionList.add(rowToPrescriptions(it))
+            }
+        }
+        return prescriptionList
+    }
+
+
+    /**
+     * get list of regular prescriptions for a specific patient
      */
     suspend fun getPrescriptions(patient: Int): List<Prescriptions> {
         val prescriptionList = mutableListOf<Prescriptions>()
         db.query {
-            (PrescriptionsTable innerJoin DoctorTable).select { PrescriptionsTable.patient_id.eq(patient) }.map {
-                prescriptionList.add(rowToPrescriptions(it))
-            }
+            (PrescriptionsTable innerJoin DoctorTable).select { PrescriptionsTable.patient_id.eq(patient) and
+                    PrescriptionsTable.prescription_regular.eq(false)}
+                .map {
+                    prescriptionList.add(rowToPrescriptions(it))
+                }
         }
         return prescriptionList
     }
@@ -81,7 +101,8 @@ class PrescriptionsServices {
             prescription_dosage = row[PrescriptionsTable.prescription_dosage],
             prescription_medicine = row[PrescriptionsTable.prescription_medicine],
             prescription_regular = row[PrescriptionsTable.prescription_regular],
-            prescription_type = row[PrescriptionsTable.prescription_type]
+            prescription_type = row[PrescriptionsTable.prescription_type],
+            prescription_used = row[PrescriptionsTable.prescription_used]
         )
     }
 }

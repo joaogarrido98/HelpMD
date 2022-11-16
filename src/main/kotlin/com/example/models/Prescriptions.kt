@@ -8,7 +8,8 @@ data class Prescriptions(
     val prescription_doctor: String,
     val prescription_medicine: String,
     val prescription_dosage: String,
-    val prescription_type : String
+    val prescription_type : String,
+    val prescription_used : Boolean
 )
 
 data class PrescriptionsAddRequest(

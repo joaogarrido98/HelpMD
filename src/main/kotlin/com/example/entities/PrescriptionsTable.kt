@@ -15,6 +15,7 @@ object PrescriptionsTable : Table("Prescriptions") {
     val prescription_medicine = varchar("prescription_medicine", 500)
     val prescription_type = varchar("prescription_type", 100)
     val prescription_dosage = varchar("prescription_dosage", 500)
+    val prescription_used = bool("prescription_used").default(false)
 
     override val primaryKey = PrimaryKey(prescription_id, name = "PK_PRESCRIPTIONS")
 }
