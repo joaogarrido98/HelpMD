@@ -144,22 +144,50 @@ fun Route.patientRoutes(patientServices: PatientServices) {
                 title { +"Terms&Conditions" }
                 styleLink("/static-resources/main.css")
                 meta("viewport", content = "width=device-width, initial-scale=1", "utf-8")
-                link("./icon.png", "icon", "image/svg+xml")
             }
             body {
-                div("main") {
-                    div {
-                        h1 {
-                            +"Terms&Conditions"
-                        }
-                        p {
-                            +"Welcome to HelpMD!\n"
-                            +"These terms and conditions outline the rules and regulations for the use of HelpMD's "
-                            +"app.\n"
-                            +"By accessing this website we assume you accept these terms and conditions. Do not continue to use HelpMD"
-                            +" if you do not agree to take all of the terms and conditions stated on this page.\n"
-                        }
+                h1 {
+                    +"Terms&Conditions"
+                }
+                p {
+                    +"Welcome to HelpMD!"
+                    br
+                    br
+                    +"These terms and conditions outline the rules and regulations for the use of HelpMD's app."
+                    br
+                    br
+                    +"By accessing this app we assume you accept these terms and conditions. Do not continue to use "
+                    +"HelpMD if you do not agree to take all of the terms and conditions stated on this page."
+                }
+                h2{
+                    +"License"
+                }
+                p{
+                    +"Unless otherwise stated, HelpMD owns the intellectual property rights for all material on "
+                    + "HelpMD. All intellectual property rights are reserved. You may access this from HelpMD "
+                    + "for your own personal use subjected to restrictions set in these terms and "
+                    + "conditions."
+                }
+                p{
+                    +"You must not:"
+                }
+                ul {
+                    li {
+                        +"Republish material from HelpMD"
                     }
+                    li {
+                        +"Reproduce, duplicate or copy material from HelpMD"
+                    }
+                    li {
+                        +"Redistribute content from HelpMD"
+                    }
+                }
+                p{
+                    +"This Agreement shall begin on the date hereof."
+                }
+                p{
+                    +"HelpMD reserves the right to monitor all accounts and to remove any accounts which can be "
+                    + "considered inappropriate, offensive or causes breach of these Terms and Conditions."
                 }
             }
         }
