@@ -32,7 +32,6 @@ object JwtManager {
             .sign(algorithm)
     }
 
-
     /**
      * @param doctor contains Patient object which we use to generate a token
      * @return generated token

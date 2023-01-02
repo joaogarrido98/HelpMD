@@ -5,6 +5,7 @@ import com.example.entities.ActiveDoctorTable
 import com.example.entities.DoctorTable
 import com.example.models.Doctor
 import org.jetbrains.exposed.sql.*
+import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 
 class ActiveDoctorServices {
     val db = DatabaseManager

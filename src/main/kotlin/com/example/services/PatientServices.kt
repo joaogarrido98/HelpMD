@@ -8,6 +8,7 @@ import com.example.models.Activation
 import com.example.models.Patient
 import com.example.models.PatientRegisterRequest
 import org.jetbrains.exposed.sql.*
+import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.plus
 import java.time.LocalDate
 

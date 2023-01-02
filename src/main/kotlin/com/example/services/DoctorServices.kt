@@ -3,11 +3,14 @@ package com.example.services
 import com.example.database.DatabaseManager
 import com.example.entities.ActiveDoctorTable
 import com.example.entities.DoctorTable
+import com.example.entities.PatientTable
 import com.example.models.Doctor
 import com.example.models.DoctorRegisterRequest
 import org.jetbrains.exposed.sql.ResultRow
+import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.select
+import org.jetbrains.exposed.sql.update
 
 class DoctorServices {
     val db = DatabaseManager
@@ -55,6 +58,20 @@ class DoctorServices {
                 .singleOrNull()
         }
     }
+
+    /**
+     * update the password of a doctor
+     * @param email holds the email of the doctor that needs to be updated
+     * @param newPassword holds the new password
+     */
+    suspend fun updatePassword(email: String, newPassword: String) {
+        db.query {
+            DoctorTable.update(where = { DoctorTable.doctor_email eq email }) {
+                it[doctor_password] = newPassword
+            }
+        }
+    }
+
 
     /**
      * This method transforms a database row into a Doctor object

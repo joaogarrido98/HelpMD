@@ -53,7 +53,7 @@ object MessageUtils {
         val content =
             Content(
                 "text/plain",
-                "This is your recovery password, please change immediately after logging in\n\n${password}"
+                "This is your new password, please change immediately after logging in\n\n${password}"
             )
         val mail = Mail(Email(fromEmail), subject, Email(email), content)
         sendEmail(mail)

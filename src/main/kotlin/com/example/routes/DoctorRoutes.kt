@@ -4,6 +4,8 @@ import com.example.models.*
 import com.example.services.DoctorServices
 import com.example.tools.HashingUtils
 import com.example.tools.JwtManager
+import com.example.tools.MessageUtils
+import com.example.tools.ProjectUtils
 import io.ktor.server.application.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
@@ -36,6 +38,34 @@ fun Route.doctorRoutes(doctorServices: DoctorServices) {
             call.respond(ServerResponse(true, JwtManager.generateTokenDoctor(doctor), doctor))
         } catch (e: Exception) {
             call.respond(ServerResponse(false, "Unable to login"))
+        }
+    }
+
+    /**
+     * This method checks if request is valid and if so,
+     * find the patient that requested a new password and send it
+     * to him through email, updating it and hashing it at the same time
+     * in the database
+     */
+    post("doctor/password/recover") {
+        val request = call.receive<DoctorRecoverPasswordRequest>()
+        if (!request.isValid()) {
+            call.respond(ServerResponse(false, "Bad Request"))
+            return@post
+        }
+        try {
+            val doctor = doctorServices.findDoctorByEmail(request.doctor_email)
+            if (doctor == null) {
+                call.respond(ServerResponse(false, "Doctor does not exist"))
+                return@post
+            }
+            val password = ProjectUtils.generateRandomCode()
+            val hashedPassword = HashingUtils.hash(password)
+            MessageUtils.sendRecoverEmail(request.doctor_email, password)
+            doctorServices.updatePassword(request.doctor_email, hashedPassword)
+            call.respond(ServerResponse(true, "New Password Sent"))
+        } catch (e: Exception) {
+            call.respond(ServerResponse(false, "Unable to get new password"))
         }
     }
 

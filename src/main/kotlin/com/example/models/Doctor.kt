@@ -40,3 +40,15 @@ data class DoctorRegisterRequest(
         return !(this.doctor_email.isEmpty() || this.doctor_password.isEmpty() || this.doctor_name.isEmpty())
     }
 }
+
+data class DoctorRecoverPasswordRequest(
+    val doctor_email: String
+){
+    /**
+     * Validates the register request
+     * @return true or false depending on if all data needed is present
+     */
+    fun isValid(): Boolean {
+        return this.doctor_email.isNotEmpty()
+    }
+}
