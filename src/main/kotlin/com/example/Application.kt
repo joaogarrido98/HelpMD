@@ -7,11 +7,13 @@ import com.example.tools.JwtManager
 import com.fasterxml.jackson.core.util.DefaultIndenter
 import com.fasterxml.jackson.core.util.DefaultPrettyPrinter
 import com.fasterxml.jackson.databind.SerializationFeature
+import io.ktor.http.*
 import io.ktor.serialization.jackson.*
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
 import io.ktor.server.auth.jwt.*
 import io.ktor.server.plugins.contentnegotiation.*
+import io.ktor.server.plugins.cors.routing.*
 import io.ktor.server.plugins.defaultheaders.*
 import io.ktor.server.routing.*
 import io.ktor.server.websocket.*
@@ -27,6 +29,13 @@ fun Application.module() {
     val historyServices = HistoryServices()
     val activeDoctorServices = ActiveDoctorServices()
     val prescriptionsServices = PrescriptionsServices()
+
+    install(CORS) {
+        anyHost()
+        allowHeader(HttpHeaders.ContentType)
+        allowHeader(HttpHeaders.Authorization)
+        allowHeader(HttpHeaders.AccessControlAllowOrigin)
+    }
 
     install(DefaultHeaders)
 

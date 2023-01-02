@@ -43,7 +43,7 @@ fun Route.doctorRoutes(doctorServices: DoctorServices) {
 
     /**
      * This method checks if request is valid and if so,
-     * find the patient that requested a new password and send it
+     * find the doctor that requested a new password and send it
      * to him through email, updating it and hashing it at the same time
      * in the database
      */
