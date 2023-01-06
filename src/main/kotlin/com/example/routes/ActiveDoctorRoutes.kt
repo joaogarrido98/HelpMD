@@ -75,7 +75,7 @@ fun Route.activeDoctorRoutes(activeDoctorServices: ActiveDoctorServices) {
         /**
          * check if specific doctor is active
          */
-        get("is-active/doctor/"){
+        get("is-active/doctor"){
             try {
                 val doctorId = call.principal<Doctor>()!!.doctor_id
                 val isDoctorActive = activeDoctorServices.isDoctorActive(doctorId)
