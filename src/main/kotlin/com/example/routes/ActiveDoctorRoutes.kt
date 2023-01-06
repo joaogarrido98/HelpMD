@@ -71,5 +71,22 @@ fun Route.activeDoctorRoutes(activeDoctorServices: ActiveDoctorServices) {
                 call.respond(ServerResponse(false, "Unable to change doctor status"))
             }
         }
+
+        /**
+         * check if specific doctor is active
+         */
+        get("is-active/doctor/"){
+            try {
+                val doctorId = call.principal<Doctor>()!!.doctor_id
+                val isDoctorActive = activeDoctorServices.isDoctorActive(doctorId)
+                if(isDoctorActive != null){
+                    call.respond(ServerResponse(true, "Active", true))
+                }else{
+                    call.respond(ServerResponse(true, "Not active", false))
+                }
+            } catch (e: Exception) {
+                call.respond(ServerResponse(false, "Unable to change doctor status"))
+            }
+        }
     }
 }

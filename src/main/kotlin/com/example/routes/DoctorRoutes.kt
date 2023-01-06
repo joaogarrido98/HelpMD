@@ -28,11 +28,11 @@ fun Route.doctorRoutes(doctorServices: DoctorServices) {
         try {
             val doctor: Doctor? = doctorServices.findDoctorByEmail(request.doctor_email)
             if (doctor == null) {
-                call.respond(ServerResponse(false, "User does not exist"))
+                call.respond(ServerResponse(false, "Doctor does not exist"))
                 return@post
             }
             if (doctor.doctor_password != HashingUtils.hash(request.doctor_password)) {
-                call.respond(ServerResponse(false, "User email or password incorrect"))
+                call.respond(ServerResponse(false, "Doctor email or password incorrect"))
                 return@post
             }
             call.respond(ServerResponse(true, JwtManager.generateTokenDoctor(doctor), doctor))
