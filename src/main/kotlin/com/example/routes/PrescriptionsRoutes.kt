@@ -61,11 +61,24 @@ fun Route.prescriptionsRoutes(prescriptionsServices: PrescriptionsServices) {
                 call.respond(ServerResponse(false, "Unable to get prescriptions"))
             }
         }
+
+        /**
+         * refill specific prescription
+         */
+        post("prescriptions/refill/{id}"){
+            val prescriptionId = call.parameters["id"]?.toInt()
+            try{
+                prescriptionId?.let { it1 -> prescriptionsServices.refillPrescription(it1) }
+                call.respond(ServerResponse(true, "Prescription Refilled"))
+            }catch (e: Exception){
+                call.respond(ServerResponse(false, "Unable to refill prescription"))
+            }
+        }
     }
+
 
     /**
      * view prescription
-     * if prescription is regular dont delete else delete
      */
     get("prescriptions/view/{prescription}") {
         try {
@@ -76,9 +89,7 @@ fun Route.prescriptionsRoutes(prescriptionsServices: PrescriptionsServices) {
                 call.respond("Prescription does not exist")
                 return@get
             }
-            if (!prescription.prescription_regular) {
-                prescriptionsServices.deletePrescription(prescriptionId)
-            }
+            prescriptionsServices.deletePrescription(prescriptionId)
             call.respondHtml {
                 head {
                     title { +"Prescription" }

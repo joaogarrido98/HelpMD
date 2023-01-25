@@ -57,9 +57,25 @@ class PrescriptionsServices {
         }
     }
 
+    /**
+     * refill a prescription
+     * used turns to false and date becomes the current time
+     * @param prescriptionId holds the id of the prescription to be changed
+     */
+    suspend fun refillPrescription(prescriptionId: Int){
+        db.query {
+            PrescriptionsTable.update ({PrescriptionsTable.prescription_id.eq(prescriptionId)}){
+                it[prescription_used] = false
+                it[prescription_date] = LocalDate.now()
+            }
+        }
+    }
+
 
     /**
      * get list of regular prescriptions for a specific patient
+     * @param patient holds the id of the patient to which the prescriptions belong to
+     * @return a list of Prescriptions
      */
     suspend fun getRegularPrescriptions(patient: Int): List<Prescriptions> {
         val prescriptionList = mutableListOf<Prescriptions>()
@@ -76,6 +92,8 @@ class PrescriptionsServices {
 
     /**
      * get list of one-off prescriptions for a specific patient
+     * @param patient holds the id of the patient to which the prescriptions belong to
+     * @return a list of Prescriptions
      */
     suspend fun getPrescriptions(patient: Int): List<Prescriptions> {
         val prescriptionList = mutableListOf<Prescriptions>()
