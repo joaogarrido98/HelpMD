@@ -100,7 +100,7 @@ fun Route.prescriptionsRoutes(prescriptionsServices: PrescriptionsServices) {
                     h1{
                         +"Prescription"
                     }
-                    if(prescription.prescription_used){
+                    if(prescription.prescription_used && !prescription.prescription_regular){
                         h2("handed"){
                             +"This prescription has been handled already"
                         }
