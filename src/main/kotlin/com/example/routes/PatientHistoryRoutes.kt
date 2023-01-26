@@ -38,6 +38,10 @@ fun Route.patientHistoryRoutes(historyServices: HistoryServices) {
             try {
                 val patientId = call.principal<Patient>()!!.patient_id
                 val history = historyServices.findPatientHistory(patientId)
+                if (history == null) {
+                    call.respond(ServerResponse(true, "No medical history", null))
+                    return@get
+                }
                 call.respond(ServerResponse(true, "Medical History", history))
             } catch (e: Exception) {
                 call.respond(ServerResponse(false, "Unable to get patient history"))

@@ -35,11 +35,11 @@ class HistoryServices {
      * @param patientId holds the patient which we want to find the medical history
      * @return PatientHistory object
      */
-    suspend fun findPatientHistory(patientId: Int): PatientHistory {
+    suspend fun findPatientHistory(patientId: Int): PatientHistory? {
         return db.query {
             PatientHistoryTable.select { PatientHistoryTable.patient_id.eq(patientId) }
                 .map { rowToPatientHistory(it) }
-                .single()
+                .singleOrNull()
         }
     }
 
