@@ -14,7 +14,6 @@ object PatientHistoryTable: Table("PatientHistory") {
     val patient_vaccines = varchar("patient_vaccines", 1500)
     val patient_diseases = varchar("patient_diseases", 1500)
     val patient_blood = varchar("patient_blood", 100)
-    val patient_hospitalized = bool("patient_hospitalized")
 
     override val primaryKey = PrimaryKey(history_id, name = "PK_PATIENT_HISTORY")
 }

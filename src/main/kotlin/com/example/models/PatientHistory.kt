@@ -9,7 +9,6 @@ data class PatientHistory(
     val patient_lifestyle: String,
     val patient_vaccines: String,
     val patient_diseases: String,
-    val patient_hospitalized: Boolean,
     val patient_blood: String
 )
 
@@ -19,7 +18,6 @@ data class AddPatientHistoryRequest(
     val patient_lifestyle: String,
     val patient_vaccines: String,
     val patient_diseases: String,
-    val patient_hospitalized: Boolean,
     val patient_blood: String
 ) {
     fun isValid(): Boolean {
