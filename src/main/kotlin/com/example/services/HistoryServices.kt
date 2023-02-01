@@ -26,7 +26,6 @@ class HistoryServices {
                 it[patient_lifestyle] = patientHistory.patient_lifestyle
                 it[patient_vaccines] = patientHistory.patient_vaccines
                 it[patient_blood] = patientHistory.patient_blood
-                it[patient_hospitalized] = patientHistory.patient_hospitalized
             }
         }
     }
@@ -56,7 +55,6 @@ class HistoryServices {
             patient_allergies = row[PatientHistoryTable.patient_allergies],
             patient_blood = row[PatientHistoryTable.patient_blood],
             patient_diseases = row[PatientHistoryTable.patient_diseases],
-            patient_hospitalized = row[PatientHistoryTable.patient_hospitalized],
             patient_lifestyle = row[PatientHistoryTable.patient_lifestyle],
             patient_vaccines = row[PatientHistoryTable.patient_vaccines]
         )
