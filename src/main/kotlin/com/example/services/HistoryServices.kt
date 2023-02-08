@@ -51,7 +51,7 @@ class HistoryServices {
         return PatientHistory(
             patient_id = row[PatientHistoryTable.patient_id],
             history_id = row[PatientHistoryTable.history_id],
-            patient_family_history = row[PatientHistoryTable.patient_family],
+            patient_family = row[PatientHistoryTable.patient_family],
             patient_allergies = row[PatientHistoryTable.patient_allergies],
             patient_blood = row[PatientHistoryTable.patient_blood],
             patient_diseases = row[PatientHistoryTable.patient_diseases],

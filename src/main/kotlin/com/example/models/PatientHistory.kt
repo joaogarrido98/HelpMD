@@ -5,7 +5,7 @@ data class PatientHistory(
     val history_id: Int,
     val patient_id: Int,
     val patient_allergies: String,
-    val patient_family_history: String,
+    val patient_family: String,
     val patient_lifestyle: String,
     val patient_vaccines: String,
     val patient_diseases: String,
