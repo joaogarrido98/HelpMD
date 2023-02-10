@@ -71,6 +71,7 @@ fun Route.prescriptionsRoutes(prescriptionsServices: PrescriptionsServices) {
                 val prescription = prescriptionsServices.getMostRecentPrescription(patient)
                 call.respond(ServerResponse(true, "Prescription", prescription))
             }catch (e:Exception){
+                print(e.toString())
                 call.respond(ServerResponse(false, "Unable to get most recent prescription"))
             }
         }
