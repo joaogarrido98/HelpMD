@@ -36,12 +36,13 @@ class PrescriptionsServices {
     /**
      * get the latest prescription for a given patient
      */
-    suspend fun getMostRecentPrescription(patient: Int){
+    suspend fun getMostRecentPrescription(patient: Int): Prescriptions {
         return db.query {
-            PrescriptionsTable.select(where = PrescriptionsTable.patient_id.eq(patient)).orderBy(PrescriptionsTable.prescription_date)
-                .map{
-                rowToPrescriptions(it)
-            }.last()
+            PrescriptionsTable.select(where = PrescriptionsTable.patient_id.eq(patient))
+                .orderBy(PrescriptionsTable.prescription_date)
+                .map {
+                    rowToPrescriptions(it)
+                }.last()
         }
     }
 
@@ -51,7 +52,11 @@ class PrescriptionsServices {
      */
     suspend fun findPrescription(prescriptionId: Int): Prescriptions? {
         return db.query {
-            (PrescriptionsTable innerJoin DoctorTable).select(where = PrescriptionsTable.prescription_id.eq(prescriptionId)).map {
+            (PrescriptionsTable innerJoin DoctorTable).select(
+                where = PrescriptionsTable.prescription_id.eq(
+                    prescriptionId
+                )
+            ).map {
                 rowToPrescriptions(it)
             }.singleOrNull()
         }
@@ -63,7 +68,7 @@ class PrescriptionsServices {
      */
     suspend fun deletePrescription(prescriptionId: Int) {
         db.query {
-            PrescriptionsTable.update ({ PrescriptionsTable.prescription_id.eq(prescriptionId) }){
+            PrescriptionsTable.update({ PrescriptionsTable.prescription_id.eq(prescriptionId) }) {
                 it[prescription_used] = true
             }
         }
@@ -74,9 +79,9 @@ class PrescriptionsServices {
      * used turns to false and date becomes the current time
      * @param prescriptionId holds the id of the prescription to be changed
      */
-    suspend fun refillPrescription(prescriptionId: Int){
+    suspend fun refillPrescription(prescriptionId: Int) {
         db.query {
-            PrescriptionsTable.update ({PrescriptionsTable.prescription_id.eq(prescriptionId)}){
+            PrescriptionsTable.update({ PrescriptionsTable.prescription_id.eq(prescriptionId) }) {
                 it[prescription_used] = false
                 it[prescription_date] = LocalDate.now()
             }
@@ -91,8 +96,10 @@ class PrescriptionsServices {
     suspend fun getPrescriptions(patient: Int, regular: Boolean): List<Prescriptions> {
         val prescriptionList = mutableListOf<Prescriptions>()
         db.query {
-            (PrescriptionsTable innerJoin DoctorTable).select { PrescriptionsTable.patient_id.eq(patient) and
-                    PrescriptionsTable.prescription_regular.eq(regular)}
+            (PrescriptionsTable innerJoin DoctorTable).select {
+                PrescriptionsTable.patient_id.eq(patient) and
+                        PrescriptionsTable.prescription_regular.eq(regular)
+            }
                 .map {
                     prescriptionList.add(rowToPrescriptions(it))
                 }
