@@ -3,8 +3,10 @@ package com.example.services
 import com.example.database.DatabaseManager
 import com.example.entities.BookingsTable
 import com.example.entities.DoctorTable
+import com.example.models.AddBookingsRequest
 import com.example.models.Bookings
 import org.jetbrains.exposed.sql.ResultRow
+import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.select
 
 class BookingServices {
@@ -24,6 +26,22 @@ class BookingServices {
                 }
         }
         return bookingsList
+    }
+
+
+    /**
+     * @param booking holds a booking to add to database
+     */
+    suspend fun addBookings(booking: AddBookingsRequest){
+        db.query {
+            BookingsTable.insert {
+                it[booking_patient] = booking.booking_patient
+                it[booking_doctor] = booking.booking_doctor
+                it[booking_date] = booking.booking_date
+                it[booking_start] = booking.booking_start
+                it[booking_end] = booking.booking_end
+            }
+        }
     }
 
     /**
