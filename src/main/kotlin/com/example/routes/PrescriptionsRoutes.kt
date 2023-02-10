@@ -47,12 +47,12 @@ fun Route.prescriptionsRoutes(prescriptionsServices: PrescriptionsServices) {
             try {
                 val patient = call.principal<Patient>()!!.patient_id
                 if (prescriptionType == "regular") {
-                    val prescriptions = prescriptionsServices.getRegularPrescriptions(patient)
+                    val prescriptions = prescriptionsServices.getPrescriptions(patient, true)
                     call.respond(ServerResponse(true, "Prescriptions", prescriptions))
                     return@get
                 }
                 if (prescriptionType == "once") {
-                    val prescriptions = prescriptionsServices.getPrescriptions(patient)
+                    val prescriptions = prescriptionsServices.getPrescriptions(patient,false)
                     call.respond(ServerResponse(true, "Prescriptions", prescriptions))
                     return@get
                 }

@@ -71,35 +71,16 @@ class PrescriptionsServices {
         }
     }
 
-
     /**
-     * get list of regular prescriptions for a specific patient
+     * get list of prescriptions for a specific patient
      * @param patient holds the id of the patient to which the prescriptions belong to
      * @return a list of Prescriptions
      */
-    suspend fun getRegularPrescriptions(patient: Int): List<Prescriptions> {
+    suspend fun getPrescriptions(patient: Int, regular: Boolean): List<Prescriptions> {
         val prescriptionList = mutableListOf<Prescriptions>()
         db.query {
             (PrescriptionsTable innerJoin DoctorTable).select { PrescriptionsTable.patient_id.eq(patient) and
-                    PrescriptionsTable.prescription_regular.eq(true)}
-                .map {
-                prescriptionList.add(rowToPrescriptions(it))
-            }
-        }
-        return prescriptionList
-    }
-
-
-    /**
-     * get list of one-off prescriptions for a specific patient
-     * @param patient holds the id of the patient to which the prescriptions belong to
-     * @return a list of Prescriptions
-     */
-    suspend fun getPrescriptions(patient: Int): List<Prescriptions> {
-        val prescriptionList = mutableListOf<Prescriptions>()
-        db.query {
-            (PrescriptionsTable innerJoin DoctorTable).select { PrescriptionsTable.patient_id.eq(patient) and
-                    PrescriptionsTable.prescription_regular.eq(false)}
+                    PrescriptionsTable.prescription_regular.eq(regular)}
                 .map {
                     prescriptionList.add(rowToPrescriptions(it))
                 }

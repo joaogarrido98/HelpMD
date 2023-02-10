@@ -22,7 +22,6 @@ object DatabaseManager {
         transaction {
             SchemaUtils.create(PatientTable)
             SchemaUtils.create(DoctorTable)
-            SchemaUtils.create(TimetableTable)
             SchemaUtils.create(ActivationTable)
             SchemaUtils.create(ActiveDoctorTable)
             SchemaUtils.create(SchedulesTable)
@@ -44,20 +43,6 @@ object DatabaseManager {
         val password = uri.userInfo.split(":").toTypedArray()[1]
         config.jdbcUrl = "jdbc:postgresql://" + uri.host + ":" + uri.port + uri.path + "?sslmode=require" +
                 "&user=$username&password=$password"
-        config.maximumPoolSize = 3
-        config.isAutoCommit = false
-        config.transactionIsolation = "TRANSACTION_REPEATABLE_READ"
-        config.validate()
-        return HikariDataSource(config)
-    }
-
-    /**
-     * server configuration for localhost
-     */
-    private fun hikariLocal(): HikariDataSource {
-        val config = HikariConfig()
-        config.driverClassName = System.getenv("JDBC_DRIVER")
-        config.jdbcUrl = System.getenv("DATABASE_URL")
         config.maximumPoolSize = 3
         config.isAutoCommit = false
         config.transactionIsolation = "TRANSACTION_REPEATABLE_READ"
