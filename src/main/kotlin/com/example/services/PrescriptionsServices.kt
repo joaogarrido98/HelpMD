@@ -38,7 +38,7 @@ class PrescriptionsServices {
      */
     suspend fun getMostRecentPrescription(patient: Int): Prescriptions {
         return db.query {
-            PrescriptionsTable.select(where = PrescriptionsTable.patient_id.eq(patient))
+            (PrescriptionsTable innerJoin DoctorTable).select(where = PrescriptionsTable.patient_id.eq(patient))
                 .orderBy(PrescriptionsTable.prescription_date)
                 .map {
                     rowToPrescriptions(it)

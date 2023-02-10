@@ -69,9 +69,9 @@ fun Route.prescriptionsRoutes(prescriptionsServices: PrescriptionsServices) {
             try{
                 val patient = call.principal<Patient>()!!.patient_id
                 val prescription = prescriptionsServices.getMostRecentPrescription(patient)
-                print(prescription)
                 call.respond(ServerResponse(true, "Prescription", prescription))
             }catch (e:Exception){
+                println(e.toString())
                 call.respond(ServerResponse(false, "Unable to get most recent prescription"))
             }
         }
