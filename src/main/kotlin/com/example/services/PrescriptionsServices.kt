@@ -1,16 +1,13 @@
 package com.example.services
 
 import com.example.database.DatabaseManager
-import com.example.entities.ActiveDoctorTable
 import com.example.entities.DoctorTable
 import com.example.entities.PrescriptionsTable
-import com.example.models.Doctor
 import com.example.models.Prescriptions
 import com.example.models.PrescriptionsAddRequest
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
-import org.jetbrains.exposed.sql.SqlExpressionBuilder.greater
-import java.time.LocalDate
+import java.time.LocalDateTime
 
 class PrescriptionsServices {
     private val db = DatabaseManager
@@ -23,13 +20,25 @@ class PrescriptionsServices {
         db.query {
             PrescriptionsTable.insert {
                 it[patient_id] = prescription.patient_id
-                it[prescription_date] = LocalDate.now()
+                it[prescription_date] = LocalDateTime.now()
                 it[prescription_doctor] = prescription.prescription_doctor!!
                 it[prescription_dosage] = prescription.prescription_dosage
                 it[prescription_medicine] = prescription.prescription_medicine
                 it[prescription_regular] = prescription.prescription_regular
                 it[prescription_type] = prescription.prescription_type
             }
+        }
+    }
+
+    /**
+     * get the latest prescription for a given patient
+     */
+    suspend fun getMostRecentPrescription(patient: Int){
+        return db.query {
+            PrescriptionsTable.select(where = PrescriptionsTable.patient_id.eq(patient)).orderBy(PrescriptionsTable.prescription_date)
+                .map{
+                rowToPrescriptions(it)
+            }.first()
         }
     }
 
@@ -66,7 +75,7 @@ class PrescriptionsServices {
         db.query {
             PrescriptionsTable.update ({PrescriptionsTable.prescription_id.eq(prescriptionId)}){
                 it[prescription_used] = false
-                it[prescription_date] = LocalDate.now()
+                it[prescription_date] = LocalDateTime.now()
             }
         }
     }

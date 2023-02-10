@@ -6,6 +6,7 @@ import com.zaxxer.hikari.HikariDataSource
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.jetbrains.exposed.sql.Database
+import org.jetbrains.exposed.sql.Schema
 import org.jetbrains.exposed.sql.SchemaUtils
 import org.jetbrains.exposed.sql.transactions.transaction
 import java.net.URI
@@ -20,15 +21,15 @@ object DatabaseManager {
     fun init() {
         Database.connect(hikari())
         transaction {
-            SchemaUtils.create(PatientTable)
-            SchemaUtils.create(DoctorTable)
-            SchemaUtils.create(ActivationTable)
-            SchemaUtils.create(ActiveDoctorTable)
-            SchemaUtils.create(SchedulesTable)
-            SchemaUtils.create(PrescriptionsTable)
-            SchemaUtils.create(PatientHistoryTable)
-            SchemaUtils.create(ScheduleDoctorTable)
-            SchemaUtils.create(BookingsTable)
+            SchemaUtils.createMissingTablesAndColumns(PatientTable)
+            SchemaUtils.createMissingTablesAndColumns(DoctorTable)
+            SchemaUtils.createMissingTablesAndColumns(ActivationTable)
+            SchemaUtils.createMissingTablesAndColumns(ActiveDoctorTable)
+            SchemaUtils.createMissingTablesAndColumns(SchedulesTable)
+            SchemaUtils.createMissingTablesAndColumns(PrescriptionsTable)
+            SchemaUtils.createMissingTablesAndColumns(PatientHistoryTable)
+            SchemaUtils.createMissingTablesAndColumns(ScheduleDoctorTable)
+            SchemaUtils.createMissingTablesAndColumns(BookingsTable)
         }
     }
 

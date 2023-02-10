@@ -63,6 +63,19 @@ fun Route.prescriptionsRoutes(prescriptionsServices: PrescriptionsServices) {
         }
 
         /**
+         * get the most recent prescription
+         */
+        get("prescriptions/recent"){
+            try{
+                val patient = call.principal<Patient>()!!.patient_id
+                val prescription = prescriptionsServices.getMostRecentPrescription(patient)
+                call.respond(ServerResponse(true, "Prescription", prescription))
+            }catch (e:Exception){
+                call.respond(ServerResponse(false, "Unable to get most recent prescription"))
+            }
+        }
+
+        /**
          * refill specific prescription
          */
         post("prescriptions/refill/{id}"){
