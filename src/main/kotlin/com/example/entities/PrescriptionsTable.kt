@@ -2,7 +2,6 @@ package com.example.entities
 
 import org.jetbrains.exposed.sql.Table
 import org.jetbrains.exposed.sql.javatime.date
-import org.jetbrains.exposed.sql.javatime.datetime
 
 /**
  * ORM object for PRESCRIPTIONS table on DB
@@ -10,7 +9,7 @@ import org.jetbrains.exposed.sql.javatime.datetime
 object PrescriptionsTable : Table("Prescriptions") {
     val prescription_id = integer("prescription_id").autoIncrement()
     val patient_id = integer("patient_id").references(PatientTable.patient_id)
-    val prescription_date = datetime("prescription_date")
+    val prescription_date = date("prescription_date")
     val prescription_regular = bool("prescription_regular").default(false)
     val prescription_doctor = integer("prescription_doctor").references(DoctorTable.doctor_id)
     val prescription_medicine = varchar("prescription_medicine", 500)

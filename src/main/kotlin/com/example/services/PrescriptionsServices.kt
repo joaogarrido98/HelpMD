@@ -1,13 +1,16 @@
 package com.example.services
 
 import com.example.database.DatabaseManager
+import com.example.entities.ActiveDoctorTable
 import com.example.entities.DoctorTable
 import com.example.entities.PrescriptionsTable
+import com.example.models.Doctor
 import com.example.models.Prescriptions
 import com.example.models.PrescriptionsAddRequest
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
-import java.time.LocalDateTime
+import org.jetbrains.exposed.sql.SqlExpressionBuilder.greater
+import java.time.LocalDate
 
 class PrescriptionsServices {
     private val db = DatabaseManager
@@ -20,7 +23,7 @@ class PrescriptionsServices {
         db.query {
             PrescriptionsTable.insert {
                 it[patient_id] = prescription.patient_id
-                it[prescription_date] = LocalDateTime.now()
+                it[prescription_date] = LocalDate.now()
                 it[prescription_doctor] = prescription.prescription_doctor!!
                 it[prescription_dosage] = prescription.prescription_dosage
                 it[prescription_medicine] = prescription.prescription_medicine
@@ -38,7 +41,7 @@ class PrescriptionsServices {
             PrescriptionsTable.select(where = PrescriptionsTable.patient_id.eq(patient)).orderBy(PrescriptionsTable.prescription_date)
                 .map{
                 rowToPrescriptions(it)
-            }.first()
+            }.last()
         }
     }
 
@@ -75,7 +78,7 @@ class PrescriptionsServices {
         db.query {
             PrescriptionsTable.update ({PrescriptionsTable.prescription_id.eq(prescriptionId)}){
                 it[prescription_used] = false
-                it[prescription_date] = LocalDateTime.now()
+                it[prescription_date] = LocalDate.now()
             }
         }
     }
