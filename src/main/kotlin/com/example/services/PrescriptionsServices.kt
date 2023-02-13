@@ -99,10 +99,9 @@ class PrescriptionsServices {
             (PrescriptionsTable innerJoin DoctorTable).select {
                 PrescriptionsTable.patient_id.eq(patient) and
                         PrescriptionsTable.prescription_regular.eq(regular)
+            }.orderBy(PrescriptionsTable.prescription_id to SortOrder.DESC).map {
+                prescriptionList.add(rowToPrescriptions(it))
             }
-                .map {
-                    prescriptionList.add(rowToPrescriptions(it))
-                }
         }
         return prescriptionList
     }
