@@ -5,9 +5,9 @@ import com.example.entities.BookingsTable
 import com.example.entities.DoctorTable
 import com.example.models.AddBookingsRequest
 import com.example.models.Bookings
-import org.jetbrains.exposed.sql.ResultRow
-import org.jetbrains.exposed.sql.insert
-import org.jetbrains.exposed.sql.select
+import org.jetbrains.exposed.sql.*
+import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
+import java.awt.print.Book
 import java.time.LocalDate
 import java.time.LocalTime
 
@@ -34,7 +34,7 @@ class BookingServices {
     /**
      * @param booking holds a booking to add to database
      */
-    suspend fun addBookings(booking: AddBookingsRequest){
+    suspend fun addBookings(booking: AddBookingsRequest) {
         db.query {
             BookingsTable.insert {
                 it[booking_patient] = booking.booking_patient
@@ -43,6 +43,27 @@ class BookingServices {
                 it[booking_start] = LocalTime.parse(booking.booking_start)
                 it[booking_end] = LocalTime.parse(booking.booking_end)
             }
+        }
+    }
+
+    suspend fun getUpcomingBookings(patient_id: Int): Bookings? {
+        return db.query {
+            BookingsTable.select { BookingsTable.booking_patient eq patient_id }.orderBy(
+                BookingsTable
+                    .booking_date to SortOrder.ASC
+            ).orderBy(BookingsTable.booking_start to SortOrder.ASC).map {
+                rowToBookings(it)
+            }.singleOrNull()
+        }
+    }
+
+    /**
+     * delete a booking given with booking_id
+     * @param booking_id holds the id of the booking to be deleted of type Int
+     */
+    suspend fun deleteBooking(booking_id : Int){
+        db.query {
+            BookingsTable.deleteWhere { BookingsTable.booking_id eq booking_id }
         }
     }
 
