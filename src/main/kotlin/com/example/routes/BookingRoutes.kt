@@ -57,6 +57,7 @@ fun Route.bookingRoutes(bookingServices: BookingServices) {
                 }
                 call.respond(ServerResponse(true, "Upcoming Booking", bookings))
             } catch (e: Exception) {
+                print(e.message.toString())
                 call.respond(ServerResponse(false, "Unable to get booking"))
             }
         }

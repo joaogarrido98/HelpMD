@@ -46,14 +46,26 @@ class BookingServices {
         }
     }
 
+    /**
+     * get the closest booking to the current date
+     * @param patient_id holds the id for the patient we want to find the upcoming booking
+     * @return a booking
+     */
     suspend fun getUpcomingBookings(patient_id: Int): Bookings? {
+        val date = LocalDate.now()
+        val time = LocalTime.now()
         return db.query {
-            BookingsTable.select { BookingsTable.booking_patient eq patient_id }.orderBy(
-                BookingsTable
-                    .booking_date to SortOrder.ASC
-            ).orderBy(BookingsTable.booking_start to SortOrder.ASC).map {
-                rowToBookings(it)
-            }.firstOrNull()
+            (BookingsTable innerJoin DoctorTable).select { BookingsTable.booking_patient eq patient_id }.andWhere {
+                BookingsTable.booking_end.greater(time)
+            }.andWhere {
+                BookingsTable.booking_date.greaterEq(date)
+            }
+                .orderBy(
+                    BookingsTable
+                        .booking_date to SortOrder.ASC
+                ).orderBy(BookingsTable.booking_start to SortOrder.ASC).map {
+                    rowToBookings(it)
+                }.firstOrNull()
         }
     }
 
@@ -61,7 +73,7 @@ class BookingServices {
      * delete a booking given with booking_id
      * @param booking_id holds the id of the booking to be deleted of type Int
      */
-    suspend fun deleteBooking(booking_id : Int){
+    suspend fun deleteBooking(booking_id: Int) {
         db.query {
             BookingsTable.deleteWhere { BookingsTable.booking_id eq booking_id }
         }
