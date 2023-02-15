@@ -8,6 +8,8 @@ import com.example.models.Bookings
 import org.jetbrains.exposed.sql.ResultRow
 import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.select
+import java.time.LocalDate
+import java.time.LocalTime
 
 class BookingServices {
     val db = DatabaseManager
@@ -37,9 +39,9 @@ class BookingServices {
             BookingsTable.insert {
                 it[booking_patient] = booking.booking_patient
                 it[booking_doctor] = booking.booking_doctor
-                it[booking_date] = booking.booking_date
-                it[booking_start] = booking.booking_start
-                it[booking_end] = booking.booking_end
+                it[booking_date] = LocalDate.parse(booking.booking_date)
+                it[booking_start] = LocalTime.parse(booking.booking_start)
+                it[booking_end] = LocalTime.parse(booking.booking_end)
             }
         }
     }

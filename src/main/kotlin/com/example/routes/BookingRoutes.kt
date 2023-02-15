@@ -29,7 +29,7 @@ fun Route.bookingRoutes(bookingServices: BookingServices) {
          * check if request is valid.
          * Add booking to db
          */
-        post("bookings"){
+        post("bookings/add"){
             val request = call.receive<AddBookingsRequest>()
             if (!request.isValid()) {
                 call.respond(ServerResponse(false, "Bad Request"))
