@@ -7,9 +7,8 @@ import com.example.models.AddBookingsRequest
 import com.example.models.Bookings
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
-import org.jetbrains.exposed.sql.SqlExpressionBuilder.greater
-import java.awt.print.Book
 import java.time.LocalDate
+import java.time.LocalDateTime
 import java.time.LocalTime
 
 class BookingServices {
@@ -40,9 +39,7 @@ class BookingServices {
             BookingsTable.insert {
                 it[booking_patient] = booking.booking_patient
                 it[booking_doctor] = booking.booking_doctor
-                it[booking_date] = LocalDate.parse(booking.booking_date)
-                it[booking_start] = LocalTime.parse(booking.booking_start)
-                it[booking_end] = LocalTime.parse(booking.booking_end)
+                it[booking_date] = LocalDateTime.parse(booking.booking_date)
             }
         }
     }
@@ -53,12 +50,10 @@ class BookingServices {
      * @return a booking
      */
     suspend fun getUpcomingBookings(patient_id: Int): Bookings? {
-        val date = LocalDate.now()
-        val time = LocalTime.now()
+        val date = LocalDateTime.now()
         return db.query {
             (BookingsTable innerJoin DoctorTable).select { BookingsTable.booking_patient eq patient_id }.andWhere {
-                BookingsTable.booking_date.greaterEq(date) and BookingsTable.booking_end.greater(time)
-            }.orderBy(BookingsTable.booking_start to SortOrder.ASC).map {
+                BookingsTable.booking_date.greaterEq(date) }.orderBy(BookingsTable.booking_date to SortOrder.ASC).map {
                 rowToBookings(it)
             }.firstOrNull()
         }
@@ -83,8 +78,6 @@ class BookingServices {
             booking_date = row[BookingsTable.booking_date].toString(),
             booking_doctor = row[DoctorTable.doctor_name],
             booking_id = row[BookingsTable.booking_id],
-            booking_start = row[BookingsTable.booking_start].toString(),
-            booking_end = row[BookingsTable.booking_end].toString(),
             booking_patient = row[BookingsTable.booking_patient]
         )
     }
