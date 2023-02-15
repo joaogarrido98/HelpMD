@@ -53,7 +53,7 @@ class BookingServices {
                     .booking_date to SortOrder.ASC
             ).orderBy(BookingsTable.booking_start to SortOrder.ASC).map {
                 rowToBookings(it)
-            }.singleOrNull()
+            }.firstOrNull()
         }
     }
 
