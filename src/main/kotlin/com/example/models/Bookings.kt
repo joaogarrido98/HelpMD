@@ -5,15 +5,17 @@ data class Bookings(
     val booking_id : Int,
     val booking_doctor : String,
     val booking_patient : Int,
-    val booking_date : String,
+    val booking_date_start : String,
+    val booking_date_end : String,
 )
 
 data class AddBookingsRequest(
     val booking_doctor: Int,
     val booking_patient : Int,
-    val booking_date : String,
+    val booking_date_start : String,
+    val booking_date_end : String,
 ){
     fun isValid() : Boolean {
-        return booking_date.isNotEmpty()
+        return !(booking_date_start.isEmpty() || booking_date_end.isEmpty())
     }
 }

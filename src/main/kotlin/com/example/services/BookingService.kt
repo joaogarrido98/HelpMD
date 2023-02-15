@@ -39,7 +39,8 @@ class BookingServices {
             BookingsTable.insert {
                 it[booking_patient] = booking.booking_patient
                 it[booking_doctor] = booking.booking_doctor
-                it[booking_date] = LocalDateTime.parse(booking.booking_date)
+                it[booking_date_start] = LocalDateTime.parse(booking.booking_date_start)
+                it[booking_date_end] = LocalDateTime.parse(booking.booking_date_end)
             }
         }
     }
@@ -53,7 +54,9 @@ class BookingServices {
         val date = LocalDateTime.now()
         return db.query {
             (BookingsTable innerJoin DoctorTable).select { BookingsTable.booking_patient eq patient_id }.andWhere {
-                BookingsTable.booking_date.greaterEq(date) }.orderBy(BookingsTable.booking_date to SortOrder.ASC).map {
+                BookingsTable.booking_date_end.greater(date) }.orderBy(BookingsTable.booking_date_start to SortOrder
+                .ASC)
+                .map {
                 rowToBookings(it)
             }.firstOrNull()
         }
@@ -75,7 +78,8 @@ class BookingServices {
      */
     private fun rowToBookings(row: ResultRow): Bookings {
         return Bookings(
-            booking_date = row[BookingsTable.booking_date].toString(),
+            booking_date_start = row[BookingsTable.booking_date_start].toString(),
+            booking_date_end = row[BookingsTable.booking_date_end].toString(),
             booking_doctor = row[DoctorTable.doctor_name],
             booking_id = row[BookingsTable.booking_id],
             booking_patient = row[BookingsTable.booking_patient]

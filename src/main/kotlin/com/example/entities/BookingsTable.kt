@@ -10,7 +10,8 @@ object BookingsTable : Table("Bookings") {
     val booking_id = integer("booking_id").autoIncrement()
     val booking_doctor = integer("booking_doctor").references(DoctorTable.doctor_id)
     val booking_patient = integer("booking_patient").references(PatientTable.patient_id)
-    val booking_date = datetime("booking_date")
+    val booking_date_start = datetime("booking_date_start")
+    val booking_date_end = datetime("booking_date_end")
 
     override val primaryKey = PrimaryKey(booking_id, name = "PK_BOOKINGS")
 }
