@@ -77,15 +77,4 @@ fun Route.bookingRoutes(bookingServices: BookingServices) {
             }
         }
     }
-
-    authenticate("doctor-interaction") {
-        get("bookings/doctor") {
-            try {
-                val patient = call.principal<Patient>()!!.patient_id
-
-            } catch (e: Exception) {
-                call.respond(ServerResponse(false, "Unable to get bookings"))
-            }
-        }
-    }
 }

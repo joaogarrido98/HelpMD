@@ -7,6 +7,7 @@ import com.example.models.AddBookingsRequest
 import com.example.models.Bookings
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
+import org.jetbrains.exposed.sql.SqlExpressionBuilder.greater
 import java.awt.print.Book
 import java.time.LocalDate
 import java.time.LocalTime
@@ -56,16 +57,10 @@ class BookingServices {
         val time = LocalTime.now()
         return db.query {
             (BookingsTable innerJoin DoctorTable).select { BookingsTable.booking_patient eq patient_id }.andWhere {
-                BookingsTable.booking_end.greater(time)
-            }.andWhere {
-                BookingsTable.booking_date.greaterEq(date)
-            }
-                .orderBy(
-                    BookingsTable
-                        .booking_date to SortOrder.ASC
-                ).orderBy(BookingsTable.booking_start to SortOrder.ASC).map {
-                    rowToBookings(it)
-                }.firstOrNull()
+                BookingsTable.booking_date.greaterEq(date) and BookingsTable.booking_end.greater(time)
+            }.orderBy(BookingsTable.booking_start to SortOrder.ASC).map {
+                rowToBookings(it)
+            }.firstOrNull()
         }
     }
 
