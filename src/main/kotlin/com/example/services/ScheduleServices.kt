@@ -29,7 +29,6 @@ class ScheduleServices {
         }
     }
 
-
     /**
      * get all the schedules for a specific doctor
      * @param doctor_id holds the id of the doctor we want to get the schedules

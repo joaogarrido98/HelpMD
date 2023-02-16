@@ -90,7 +90,6 @@ fun Route.prescriptionsRoutes(prescriptionsServices: PrescriptionsServices) {
         }
     }
 
-
     /**
      * view prescription
      */

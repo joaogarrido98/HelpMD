@@ -50,9 +50,14 @@ fun Route.patientHistoryRoutes(historyServices: HistoryServices) {
     }
 
     authenticate("doctor-interaction") {
+        /**
+         * get patient medical history
+         */
         get("patient/history/{patient_id}") {
+            val patientId = call.parameters["patient_id"]!!.toInt()
             try {
-
+                val patientHistory = historyServices.findPatientHistory(patientId)
+                call.respond(ServerResponse(true, "Patient History", patientHistory))
             } catch (e: Exception) {
                 call.respond(ServerResponse(false, "Unable to get patient history"))
             }

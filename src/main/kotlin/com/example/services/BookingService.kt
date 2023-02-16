@@ -30,7 +30,6 @@ class BookingServices {
         return bookingsList
     }
 
-
     /**
      * @param booking holds a booking to add to database
      */
@@ -59,6 +58,23 @@ class BookingServices {
                 .map {
                 rowToBookings(it)
             }.firstOrNull()
+        }
+    }
+
+    /**
+     * get the closest booking to the current date
+     * @param doctor_id holds the id for the doctor we want to find the upcoming booking
+     * @return a booking
+     */
+    suspend fun getUpcomingBookingsDoctor(doctor_id: Int): Bookings? {
+        val date : LocalDateTime = LocalDateTime.now()
+        return db.query {
+            (BookingsTable innerJoin DoctorTable).select { BookingsTable.booking_doctor eq doctor_id }.andWhere {
+                BookingsTable.booking_date_end.greater(date) }.orderBy(BookingsTable.booking_date_start to SortOrder
+                .ASC)
+                .map {
+                    rowToBookings(it)
+                }.firstOrNull()
         }
     }
 

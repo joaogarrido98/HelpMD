@@ -10,7 +10,6 @@ import io.ktor.server.routing.*
 
 fun Route.bookingRoutes(bookingServices: BookingServices) {
     authenticate("patient-interaction") {
-
         /**
          * get all the bookings for the user that requests
          */
@@ -62,7 +61,6 @@ fun Route.bookingRoutes(bookingServices: BookingServices) {
             }
         }
 
-
         /**
          * delete specific booking route
          */
@@ -76,5 +74,24 @@ fun Route.bookingRoutes(bookingServices: BookingServices) {
 
             }
         }
+    }
+
+
+    authenticate ("doctor-interaction"){
+        get("bookings/upcoming/doctor"){
+            try {
+                val doctor = call.principal<Doctor>()!!.doctor_id
+                val bookings = bookingServices.getUpcomingBookingsDoctor(doctor)
+                if (bookings == null) {
+                    call.respond(ServerResponse(false, "No upcoming booking"))
+                    return@get
+                }
+                call.respond(ServerResponse(true, "Upcoming Booking", bookings))
+            } catch (e: Exception) {
+                print(e.message.toString())
+                call.respond(ServerResponse(false, "Unable to get booking"))
+            }
+        }
+
     }
 }
