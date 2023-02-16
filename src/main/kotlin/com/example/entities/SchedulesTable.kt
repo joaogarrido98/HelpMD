@@ -8,7 +8,8 @@ import org.jetbrains.exposed.sql.javatime.time
  */
 object SchedulesTable : Table("Schedule") {
     val schedule_id = integer("schedule_id").autoIncrement()
-    val day_of_week = integer("day_of_week")
+    val schedule_doctor = integer("schedule_doctor").references(DoctorTable.doctor_id)
+    val schedule_day_of_week = integer("day_of_week")
     val schedule_start = time("schedule_start")
     val schedule_end = time("schedule_end")
 

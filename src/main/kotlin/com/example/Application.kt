@@ -30,6 +30,7 @@ fun Application.module() {
     val activeDoctorServices = ActiveDoctorServices()
     val prescriptionsServices = PrescriptionsServices()
     val bookingServices = BookingServices()
+    val scheduleServices = ScheduleServices()
 
 
     install(CORS) {
@@ -96,5 +97,6 @@ fun Application.module() {
         activeDoctorRoutes(activeDoctorServices)
         prescriptionsRoutes(prescriptionsServices)
         bookingRoutes(bookingServices)
+        schedulesRoutes(scheduleServices)
     }
 }

@@ -51,7 +51,7 @@ class BookingServices {
      * @return a booking
      */
     suspend fun getUpcomingBookings(patient_id: Int): Bookings? {
-        val date = LocalDateTime.now()
+        val date : LocalDateTime = LocalDateTime.now()
         return db.query {
             (BookingsTable innerJoin DoctorTable).select { BookingsTable.booking_patient eq patient_id }.andWhere {
                 BookingsTable.booking_date_end.greater(date) }.orderBy(BookingsTable.booking_date_start to SortOrder

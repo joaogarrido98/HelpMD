@@ -35,6 +35,8 @@ class PrescriptionsServices {
 
     /**
      * get the latest prescription for a given patient
+     * @param patient holds an integer which is the id of the patient
+     * @return an object of Prescription type
      */
     suspend fun getMostRecentPrescription(patient: Int): Prescriptions {
         return db.query {
@@ -49,6 +51,7 @@ class PrescriptionsServices {
     /**
      * finds a given prescription through the prescription ID
      * @param prescriptionId holds an integer which is the prescription id in the db
+     * @return an object of type Prescription
      */
     suspend fun findPrescription(prescriptionId: Int): Prescriptions? {
         return db.query {
@@ -94,7 +97,7 @@ class PrescriptionsServices {
      * @return a list of Prescriptions
      */
     suspend fun getPrescriptions(patient: Int, regular: Boolean): List<Prescriptions> {
-        val prescriptionList = mutableListOf<Prescriptions>()
+        val prescriptionList : MutableList<Prescriptions> = mutableListOf()
         db.query {
             (PrescriptionsTable innerJoin DoctorTable).select {
                 PrescriptionsTable.patient_id.eq(patient) and
@@ -108,6 +111,8 @@ class PrescriptionsServices {
 
     /**
      * Turn the result row from sql into a Prescriptions object
+     * @param row holds a result row
+     * @return an object of Prescription type
      */
     private fun rowToPrescriptions(row: ResultRow): Prescriptions {
         return Prescriptions(

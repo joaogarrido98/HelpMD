@@ -67,6 +67,7 @@ class PatientServices {
      * Get the id of the doctor that has the smallest number of patients
      * and that has the training or not of sign language
      * @param isDeaf holds the value true or false if patient is deaf or not
+     * @return doctor_id of the assigned doctor
      */
     suspend fun assignDoctor(isDeaf: Boolean): Int {
         return db.query {

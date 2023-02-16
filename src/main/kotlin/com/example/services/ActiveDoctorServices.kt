@@ -43,7 +43,7 @@ class ActiveDoctorServices {
      * @return list of doctors that are active for on call
      */
     suspend fun getActiveDoctors(): List<Doctor> {
-        val doctorList = mutableListOf<Doctor>()
+        val doctorList : MutableList<Doctor> = mutableListOf()
         db.query {
             (ActiveDoctorTable innerJoin DoctorTable).selectAll().limit(20)
                 .map {
