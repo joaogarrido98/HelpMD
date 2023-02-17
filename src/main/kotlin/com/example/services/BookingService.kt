@@ -20,9 +20,31 @@ class BookingServices {
      * @return a list of bookings
      */
     suspend fun getPatientBookings(patient_id: Int): List<Bookings> {
+        val currentTime = LocalDateTime.now()
         val bookingsList = mutableListOf<Bookings>()
         db.query {
-            (BookingsTable innerJoin DoctorTable).select { BookingsTable.booking_patient.eq(patient_id) }
+            (BookingsTable innerJoin DoctorTable).select { BookingsTable.booking_patient.eq(patient_id) }.andWhere {
+                BookingsTable.booking_date_end.greaterEq(currentTime)
+            }
+                .map {
+                    bookingsList.add(rowToBookings(it))
+                }
+        }
+        return bookingsList
+    }
+
+    /**
+     * get previous bookings for a specific patient
+     * @param patient_id holds patient id
+     * @return a list of bookings
+     */
+    suspend fun getPreviousPatientBookings(patient_id: Int): List<Bookings> {
+        val currentTime = LocalDateTime.now()
+        val bookingsList = mutableListOf<Bookings>()
+        db.query {
+            (BookingsTable innerJoin DoctorTable).select { BookingsTable.booking_patient.eq(patient_id) }.andWhere {
+                BookingsTable.booking_date_start.less(currentTime)
+            }
                 .map {
                     bookingsList.add(rowToBookings(it))
                 }
@@ -50,14 +72,17 @@ class BookingServices {
      * @return a booking
      */
     suspend fun getUpcomingBookings(patient_id: Int): Bookings? {
-        val date : LocalDateTime = LocalDateTime.now()
+        val date: LocalDateTime = LocalDateTime.now()
         return db.query {
             (BookingsTable innerJoin DoctorTable).select { BookingsTable.booking_patient eq patient_id }.andWhere {
-                BookingsTable.booking_date_end.greater(date) }.orderBy(BookingsTable.booking_date_start to SortOrder
-                .ASC)
+                BookingsTable.booking_date_end.greater(date)
+            }.orderBy(
+                BookingsTable.booking_date_start to SortOrder
+                    .ASC
+            )
                 .map {
-                rowToBookings(it)
-            }.firstOrNull()
+                    rowToBookings(it)
+                }.firstOrNull()
         }
     }
 
@@ -67,11 +92,14 @@ class BookingServices {
      * @return a booking
      */
     suspend fun getUpcomingBookingsDoctor(doctor_id: Int): Bookings? {
-        val date : LocalDateTime = LocalDateTime.now()
+        val date: LocalDateTime = LocalDateTime.now()
         return db.query {
             (BookingsTable innerJoin DoctorTable).select { BookingsTable.booking_doctor eq doctor_id }.andWhere {
-                BookingsTable.booking_date_end.greater(date) }.orderBy(BookingsTable.booking_date_start to SortOrder
-                .ASC)
+                BookingsTable.booking_date_end.greater(date)
+            }.orderBy(
+                BookingsTable.booking_date_start to SortOrder
+                    .ASC
+            )
                 .map {
                     rowToBookings(it)
                 }.firstOrNull()

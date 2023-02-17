@@ -24,6 +24,20 @@ fun Route.bookingRoutes(bookingServices: BookingServices) {
         }
 
         /**
+         * get all the previous bookings for the user that requests
+         */
+        get("bookings/patient/previous") {
+            try {
+                val patient = call.principal<Patient>()!!.patient_id
+                val bookings = bookingServices.getPreviousPatientBookings(patient)
+                call.respond(ServerResponse(true, "Bookings", bookings))
+            } catch (e: Exception) {
+                call.respond(ServerResponse(false, "Unable to get bookings"))
+            }
+        }
+
+
+        /**
          * add booking route
          * check if request is valid.
          * Add booking to db
