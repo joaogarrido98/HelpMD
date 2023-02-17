@@ -43,7 +43,7 @@ class BookingServices {
         val bookingsList = mutableListOf<Bookings>()
         db.query {
             (BookingsTable innerJoin DoctorTable).select { BookingsTable.booking_patient.eq(patient_id) }.andWhere {
-                BookingsTable.booking_date_start.less(currentTime)
+                BookingsTable.booking_date_end.less(currentTime)
             }
                 .map {
                     bookingsList.add(rowToBookings(it))
