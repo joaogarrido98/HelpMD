@@ -26,7 +26,7 @@ fun Route.bookingRoutes(bookingServices: BookingServices) {
         /**
          * get all the previous bookings for the user that requests
          */
-        get("bookings/patient/previous") {
+        get("bookings/previous") {
             try {
                 val patient = call.principal<Patient>()!!.patient_id
                 val bookings = bookingServices.getPreviousPatientBookings(patient)
