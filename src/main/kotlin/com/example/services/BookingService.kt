@@ -1,9 +1,11 @@
 package com.example.services
 
 import com.example.database.DatabaseManager
+import com.example.entities.AppointmentResultTable
 import com.example.entities.BookingsTable
 import com.example.entities.DoctorTable
 import com.example.models.AddBookingsRequest
+import com.example.models.AppointmentResult
 import com.example.models.Bookings
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
@@ -44,7 +46,7 @@ class BookingServices {
         db.query {
             (BookingsTable innerJoin DoctorTable).select { BookingsTable.booking_patient.eq(patient_id) }.andWhere {
                 BookingsTable.booking_date_end.less(currentTime)
-            }
+            }.orderBy(BookingsTable.booking_date_start to SortOrder.DESC)
                 .map {
                     bookingsList.add(rowToBookings(it))
                 }
@@ -114,6 +116,35 @@ class BookingServices {
         db.query {
             BookingsTable.deleteWhere { BookingsTable.booking_id eq booking_id }
         }
+    }
+
+    /**
+     * get the appointment results from the previous appointments
+     * @param patient_id holds the id of the patient we want to find
+     * @return list of AppointmentResult objects
+     */
+    suspend fun getAppointmentResults(patient_id: Int): List<AppointmentResult> {
+        val appointmentList = mutableListOf<AppointmentResult>()
+        db.query {
+            (AppointmentResultTable innerJoin BookingsTable).select { BookingsTable.booking_patient eq patient_id }
+                .map {
+                    rowToAppointmentResult(it)
+                }
+        }
+        return appointmentList
+    }
+
+
+    /**
+     * @param row holds the result row from the query
+     * @return AppointmentResult object
+     */
+    private fun rowToAppointmentResult(row : ResultRow): AppointmentResult {
+        return AppointmentResult(
+            result = row[AppointmentResultTable.result],
+            booking_id = row[AppointmentResultTable.booking_id],
+            result_id = row[AppointmentResultTable.result_id]
+        )
     }
 
     /**

@@ -36,6 +36,19 @@ fun Route.bookingRoutes(bookingServices: BookingServices) {
             }
         }
 
+        /**
+         * get the result from the appointment
+         */
+        get("appointment/results") {
+            try {
+                val patient = call.principal<Patient>()!!.patient_id
+                val appointmentResults = bookingServices.getAppointmentResults(patient)
+                call.respond(ServerResponse(true, "Appointment Results", appointmentResults))
+            } catch (e: Exception) {
+                call.respond(ServerResponse(false, "Unable to get appointment results"))
+            }
+        }
+
 
         /**
          * add booking route
@@ -91,8 +104,8 @@ fun Route.bookingRoutes(bookingServices: BookingServices) {
     }
 
 
-    authenticate ("doctor-interaction"){
-        get("bookings/upcoming/doctor"){
+    authenticate("doctor-interaction") {
+        get("bookings/upcoming/doctor") {
             try {
                 val doctor = call.principal<Doctor>()!!.doctor_id
                 val bookings = bookingServices.getUpcomingBookingsDoctor(doctor)
