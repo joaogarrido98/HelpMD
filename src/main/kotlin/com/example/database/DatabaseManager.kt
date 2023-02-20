@@ -28,6 +28,7 @@ object DatabaseManager {
             SchemaUtils.create(PrescriptionsTable)
             SchemaUtils.create(PatientHistoryTable)
             SchemaUtils.create(BookingsTable)
+            SchemaUtils.create(AppointmentResultTable)
         }
     }
 

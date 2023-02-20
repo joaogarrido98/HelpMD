@@ -105,6 +105,9 @@ fun Route.bookingRoutes(bookingServices: BookingServices) {
 
 
     authenticate("doctor-interaction") {
+        /**
+         * get the upcoming boolings for the doctors
+         */
         get("bookings/upcoming/doctor") {
             try {
                 val doctor = call.principal<Doctor>()!!.doctor_id
@@ -124,7 +127,7 @@ fun Route.bookingRoutes(bookingServices: BookingServices) {
         /**
          * add appointment results
          */
-        post("appointment/results/add"){
+        post("appointment/results/add") {
             val request = call.receive<AddAppointmentResult>()
             if (!request.isValid()) {
                 call.respond(ServerResponse(false, "Bad Request"))

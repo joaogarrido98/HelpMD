@@ -133,7 +133,6 @@ class BookingServices {
         return appointmentList
     }
 
-
     /**
      * add a result for appointment results
      * @param appointmentResult holds AddAppointmentResult object
