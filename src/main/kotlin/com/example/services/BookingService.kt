@@ -4,14 +4,13 @@ import com.example.database.DatabaseManager
 import com.example.entities.AppointmentResultTable
 import com.example.entities.BookingsTable
 import com.example.entities.DoctorTable
+import com.example.models.AddAppointmentResult
 import com.example.models.AddBookingsRequest
 import com.example.models.AppointmentResult
 import com.example.models.Bookings
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
-import java.time.LocalDate
 import java.time.LocalDateTime
-import java.time.LocalTime
 
 class BookingServices {
     val db = DatabaseManager
@@ -136,10 +135,24 @@ class BookingServices {
 
 
     /**
+     * add a result for appointment results
+     * @param appointmentResult holds AddAppointmentResult object
+     */
+    suspend fun addAppointmentResult(appointmentResult: AddAppointmentResult) {
+        db.query {
+            AppointmentResultTable.insert {
+                it[result] = appointmentResult.result
+                it[booking_id] = appointmentResult.booking_id
+            }
+        }
+    }
+
+
+    /**
      * @param row holds the result row from the query
      * @return AppointmentResult object
      */
-    private fun rowToAppointmentResult(row : ResultRow): AppointmentResult {
+    private fun rowToAppointmentResult(row: ResultRow): AppointmentResult {
         return AppointmentResult(
             result = row[AppointmentResultTable.result],
             booking_id = row[AppointmentResultTable.booking_id],

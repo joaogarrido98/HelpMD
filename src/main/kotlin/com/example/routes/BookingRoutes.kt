@@ -120,5 +120,23 @@ fun Route.bookingRoutes(bookingServices: BookingServices) {
             }
         }
 
+
+        /**
+         * add appointment results
+         */
+        post("appointment/results/add"){
+            val request = call.receive<AddAppointmentResult>()
+            if (!request.isValid()) {
+                call.respond(ServerResponse(false, "Bad Request"))
+                return@post
+            }
+            try {
+                bookingServices.addAppointmentResult(request)
+                call.respond(ServerResponse(true, "Appointment Result added"))
+            } catch (e: Exception) {
+                print(e.message.toString())
+                call.respond(ServerResponse(false, "Unable to add appointment result"))
+            }
+        }
     }
 }
