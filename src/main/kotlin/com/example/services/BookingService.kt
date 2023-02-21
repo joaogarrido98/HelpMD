@@ -125,9 +125,9 @@ class BookingServices {
     suspend fun getAppointmentResults(patient_id: Int): List<AppointmentResult> {
         val appointmentList = mutableListOf<AppointmentResult>()
         db.query {
-            (AppointmentResultTable innerJoin BookingsTable).select { BookingsTable.booking_patient eq patient_id }
+            (AppointmentResultTable leftJoin BookingsTable).select { BookingsTable.booking_patient eq patient_id }
                 .map {
-                    rowToAppointmentResult(it)
+                    appointmentList.add(rowToAppointmentResult(it))
                 }
         }
         return appointmentList
