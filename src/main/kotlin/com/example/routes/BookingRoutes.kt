@@ -49,6 +49,20 @@ fun Route.bookingRoutes(bookingServices: BookingServices) {
             }
         }
 
+        /**
+         * get the latest result from the appointment
+         */
+        get("appointment/results/latest") {
+            try {
+                val patient = call.principal<Patient>()!!.patient_id
+                val appointmentResult = bookingServices.getLatestResult(patient)
+                call.respond(ServerResponse(true, "Appointment Results", appointmentResult))
+            } catch (e: Exception) {
+                call.respond(ServerResponse(false, "Unable to get appointment results"))
+            }
+        }
+
+
 
         /**
          * add booking route

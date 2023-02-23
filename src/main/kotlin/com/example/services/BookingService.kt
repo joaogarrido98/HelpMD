@@ -4,10 +4,8 @@ import com.example.database.DatabaseManager
 import com.example.entities.AppointmentResultTable
 import com.example.entities.BookingsTable
 import com.example.entities.DoctorTable
-import com.example.models.AddAppointmentResult
-import com.example.models.AddBookingsRequest
-import com.example.models.AppointmentResult
-import com.example.models.Bookings
+import com.example.entities.PrescriptionsTable
+import com.example.models.*
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import java.time.LocalDateTime
@@ -132,6 +130,22 @@ class BookingServices {
         }
         return appointmentList
     }
+
+    /**
+     * get the latest appointment result for a given patient
+     * @param patient holds an integer which is the id of the patient
+     * @return an object of AppointmentResult type
+     */
+    suspend fun getLatestResult(patient: Int): AppointmentResult {
+        return db.query {
+            (AppointmentResultTable leftJoin BookingsTable).select { BookingsTable.booking_patient.eq(patient) }
+                .orderBy(PrescriptionsTable.prescription_date)
+                .map {
+                    rowToAppointmentResult(it)
+                }.last()
+        }
+    }
+
 
     /**
      * add a result for appointment results
