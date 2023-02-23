@@ -139,7 +139,7 @@ class BookingServices {
     suspend fun getLatestResult(patient: Int): AppointmentResult {
         return db.query {
             (AppointmentResultTable leftJoin BookingsTable).select { BookingsTable.booking_patient.eq(patient) }
-                .orderBy(PrescriptionsTable.prescription_date)
+                .orderBy(AppointmentResultTable.result_id)
                 .map {
                     rowToAppointmentResult(it)
                 }.last()
