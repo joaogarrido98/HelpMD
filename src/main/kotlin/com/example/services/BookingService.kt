@@ -24,7 +24,7 @@ class BookingServices {
         db.query {
             (BookingsTable innerJoin DoctorTable).select { BookingsTable.booking_patient.eq(patient_id) }.andWhere {
                 BookingsTable.booking_date_end.greaterEq(currentTime)
-            }
+            }.orderBy(BookingsTable.booking_date_start)
                 .map {
                     bookingsList.add(rowToBookings(it))
                 }

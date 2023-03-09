@@ -79,7 +79,6 @@ fun Route.bookingRoutes(bookingServices: BookingServices) {
                 bookingServices.addBookings(request)
                 call.respond(ServerResponse(true, "Booking added"))
             } catch (e: Exception) {
-                print(e.toString())
                 call.respond(ServerResponse(false, "Unable to add booking"))
             }
         }
@@ -98,7 +97,6 @@ fun Route.bookingRoutes(bookingServices: BookingServices) {
                 }
                 call.respond(ServerResponse(true, "Upcoming Booking", bookings))
             } catch (e: Exception) {
-                print(e.message.toString())
                 call.respond(ServerResponse(false, "Unable to get booking"))
             }
         }
@@ -133,7 +131,6 @@ fun Route.bookingRoutes(bookingServices: BookingServices) {
                 }
                 call.respond(ServerResponse(true, "Upcoming Booking", bookings))
             } catch (e: Exception) {
-                print(e.message.toString())
                 call.respond(ServerResponse(false, "Unable to get booking"))
             }
         }
@@ -152,7 +149,6 @@ fun Route.bookingRoutes(bookingServices: BookingServices) {
                 bookingServices.addAppointmentResult(request)
                 call.respond(ServerResponse(true, "Appointment Result added"))
             } catch (e: Exception) {
-                print(e.message.toString())
                 call.respond(ServerResponse(false, "Unable to add appointment result"))
             }
         }
