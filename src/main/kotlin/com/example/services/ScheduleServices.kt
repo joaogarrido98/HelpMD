@@ -4,11 +4,10 @@ import com.example.database.DatabaseManager
 import com.example.entities.SchedulesTable
 import com.example.models.AddScheduleRequest
 import com.example.models.Schedule
-import org.jetbrains.exposed.sql.ResultRow
+import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
-import org.jetbrains.exposed.sql.deleteWhere
-import org.jetbrains.exposed.sql.insert
-import org.jetbrains.exposed.sql.select
+import java.time.DayOfWeek
+import java.time.LocalDateTime
 import java.time.LocalTime
 
 class ScheduleServices {
@@ -18,7 +17,7 @@ class ScheduleServices {
      * add a new schedule
      * @param schedule object
      */
-    suspend fun addSchedule(schedule: AddScheduleRequest){
+    suspend fun addSchedule(schedule: AddScheduleRequest) {
         db.query {
             SchedulesTable.insert {
                 it[schedule_doctor] = schedule.schedule_doctor
@@ -30,14 +29,16 @@ class ScheduleServices {
     }
 
     /**
-     * get all the schedules for a specific doctor
-     * @param doctor_id holds the id of the doctor we want to get the schedules
+     * get all the schedules for a specific doctor and day of the week
+     * @param doctorId holds the id of the doctor we want to get the schedules
      * @return List of Schedule objects
      */
-    suspend fun getScheduleOfDoctor(doctor_id: Int): List<Schedule> {
+    suspend fun getScheduleOfDoctor(doctorId: Int, dayOfWeek: Int): List<Schedule> {
         val schedule: MutableList<Schedule> = mutableListOf()
         db.query {
-            SchedulesTable.select { SchedulesTable.schedule_doctor eq doctor_id }.map {
+            SchedulesTable.select { SchedulesTable.schedule_doctor eq doctorId }.andWhere {
+                SchedulesTable.schedule_day_of_week eq dayOfWeek
+            }.map {
                 schedule.add(rowToSchedule(it))
             }
         }
@@ -46,11 +47,11 @@ class ScheduleServices {
 
     /**
      * delete the schedule given by the id param
-     * @param
+     * @param scheduleId holds the id of the schedule we want to delete
      */
-    suspend fun deleteSchedule(schedule_id: Int) {
+    suspend fun deleteSchedule(scheduleId: Int) {
         db.query {
-            SchedulesTable.deleteWhere { SchedulesTable.schedule_id eq schedule_id }
+            SchedulesTable.deleteWhere { schedule_id eq scheduleId }
         }
     }
 

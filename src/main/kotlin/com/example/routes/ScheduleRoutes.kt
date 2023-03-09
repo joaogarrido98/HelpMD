@@ -34,10 +34,10 @@ fun Route.schedulesRoutes(scheduleServices: ScheduleServices) {
         /**
          * delete a schedule from the database route
          */
-        post("schedules/delete/{schedule_id}"){
-            val schedule_id : Int = call.parameters["schedule_id"]!!.toInt()
+        post("schedules/delete/{scheduleId}"){
+            val scheduleId : Int = call.parameters["scheduleId"]!!.toInt()
             try{
-                scheduleServices.deleteSchedule(schedule_id)
+                scheduleServices.deleteSchedule(scheduleId)
                 call.respond(ServerResponse(true, "Schedule deleted"))
             }catch (e:Exception){
                 call.respond(ServerResponse(false, "Unable to delete schedule"))
@@ -50,10 +50,11 @@ fun Route.schedulesRoutes(scheduleServices: ScheduleServices) {
         /**
          * get all the schedules for a specific doctor
          */
-        get("schedules/{doctor_id}"){
-            val doctor_id : Int = call.parameters["doctor_id"]!!.toInt()
+        get("schedules/{doctorId}/{week}"){
+            val doctorId : Int = call.parameters["doctorId"]!!.toInt()
+            val dayOfWeek : Int = call.parameters["week"]!!.toInt()
             try{
-                val schedule = scheduleServices.getScheduleOfDoctor(doctor_id)
+                val schedule = scheduleServices.getScheduleOfDoctor(doctorId, dayOfWeek)
                 call.respond(ServerResponse(true, "Schedule", schedule))
             }catch (e:Exception){
                 call.respond(ServerResponse(false, "Unable to get schedule"))

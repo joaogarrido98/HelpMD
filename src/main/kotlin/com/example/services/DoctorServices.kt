@@ -1,13 +1,10 @@
 package com.example.services
 
 import com.example.database.DatabaseManager
-import com.example.entities.ActiveDoctorTable
 import com.example.entities.DoctorTable
-import com.example.entities.PatientTable
 import com.example.models.Doctor
 import com.example.models.DoctorRegisterRequest
 import org.jetbrains.exposed.sql.ResultRow
-import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.update
