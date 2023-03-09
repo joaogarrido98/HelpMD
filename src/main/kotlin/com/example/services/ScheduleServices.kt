@@ -38,7 +38,7 @@ class ScheduleServices {
         db.query {
             SchedulesTable.select { SchedulesTable.schedule_doctor eq doctorId }.andWhere {
                 SchedulesTable.schedule_day_of_week eq dayOfWeek
-            }.map {
+            }.orderBy(SchedulesTable.schedule_start).map {
                 schedule.add(rowToSchedule(it))
             }
         }
