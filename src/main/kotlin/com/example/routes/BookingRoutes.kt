@@ -79,7 +79,8 @@ fun Route.bookingRoutes(bookingServices: BookingServices) {
                 bookingServices.addBookings(request)
                 call.respond(ServerResponse(true, "Booking added"))
             } catch (e: Exception) {
-                call.respond(ServerResponse(false, "Unable to add prescription"))
+                print(e.toString())
+                call.respond(ServerResponse(false, "Unable to add booking"))
             }
         }
 
