@@ -272,27 +272,5 @@ fun Route.patientRoutes(patientServices: PatientServices) {
                 call.respond(ServerResponse(false, "Unable to deactivate account"))
             }
         }
-
-
-        /**
-         * get all the data associated with the user
-         */
-        get("patient/data"){
-            try {
-                val patient = call.principal<Patient>()
-                if (patient != null) {
-                    val data = patientServices.getAllData(patient.patient_id)
-                    println(data)
-                    call.respond(ServerResponse(true, "My Data", data))
-                }
-                call.respond(ServerResponse(false, "Unable to get data"))
-            } catch (e: Exception) {
-                call.respond(ServerResponse(false, "Unable to get data"))
-            }
-        }
     }
 }
-
-/**
- * when done add an if message not sent then delete user ON REGISTER
- */

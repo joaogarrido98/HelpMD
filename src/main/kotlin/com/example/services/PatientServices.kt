@@ -132,23 +132,4 @@ class PatientServices {
             }
         }
     }
-
-    /**
-     * get the whole data stored in the database to the user
-     * @param patientId holds it of the patient which will get the data
-     */
-    suspend fun getAllData(patientId: Int)  {
-        return db.query {
-            (PatientTable innerJoin AppointmentResultTable innerJoin BookingsTable innerJoin PatientHistoryTable
-                    innerJoin PrescriptionsTable innerJoin SchedulesTable ).select {
-                        PatientTable.patient_id eq patientId
-            }.map {
-                rows.rowToMyData(it)
-            }.singleOrNull()
-        }
-    }
-
-
-
-
 }

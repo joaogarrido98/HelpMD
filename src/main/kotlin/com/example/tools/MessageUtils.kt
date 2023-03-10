@@ -21,15 +21,14 @@ object MessageUtils {
      * @param code holds the password
      */
     fun sendRegistrationEmail(email: String, code: String) {
-        ///TODO FIX NO SUBJECT
         val mail = Mail()
         val from = Email()
-        from.email = fromEmail
-        mail.setFrom(from)
         val subject = "Account confirmation for HelpMD"
-        mail.setSubject(subject)
         val personalization = Personalization()
         val to = Email()
+        from.email = fromEmail
+        mail.setFrom(from)
+        mail.subject = subject
         to.email = email
         personalization.addTo(to)
         personalization.subject = subject

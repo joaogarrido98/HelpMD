@@ -5,15 +5,6 @@ import com.example.models.*
 import org.jetbrains.exposed.sql.ResultRow
 
 object ResultRows {
-    /**
-     * @param row holds a result row of all tables
-     * @return MyData object
-     */
-    fun rowToMyData(row: ResultRow){
-        val patient : Patient = rowToPatient(row)
-        print(row)
-
-    }
 
     /**
      * @param row holds a result row of Activation table
