@@ -281,7 +281,9 @@ fun Route.patientRoutes(patientServices: PatientServices) {
             try {
                 val patient = call.principal<Patient>()
                 if (patient != null) {
-                  call.respond(ServerResponse(true, "My Data", patientServices.getAllData(patient.patient_id)))
+                    val data = patientServices.getAllData(patient.patient_id)
+                    println(data)
+                    call.respond(ServerResponse(true, "My Data", data))
                 }
                 call.respond(ServerResponse(false, "Unable to get data"))
             } catch (e: Exception) {
