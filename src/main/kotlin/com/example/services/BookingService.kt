@@ -11,7 +11,8 @@ import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import java.time.LocalDateTime
 
 class BookingServices {
-    val db = DatabaseManager
+    private val db = DatabaseManager
+    private val rows = ResultRows
 
     /**
      * get bookings for a specific patient
@@ -26,7 +27,7 @@ class BookingServices {
                 BookingsTable.booking_date_end.greaterEq(currentTime)
             }.orderBy(BookingsTable.booking_date_start)
                 .map {
-                    bookingsList.add(rowToBookings(it))
+                    bookingsList.add(rows.rowToBookings(it))
                 }
         }
         return bookingsList
@@ -45,7 +46,7 @@ class BookingServices {
                 BookingsTable.booking_date_end.less(currentTime)
             }.orderBy(BookingsTable.booking_date_start to SortOrder.DESC)
                 .map {
-                    bookingsList.add(rowToBookings(it))
+                    bookingsList.add(rows.rowToBookings(it))
                 }
         }
         return bookingsList
@@ -80,7 +81,7 @@ class BookingServices {
                     .ASC
             )
                 .map {
-                    rowToBookings(it)
+                    rows.rowToBookings(it)
                 }.firstOrNull()
         }
     }
@@ -100,7 +101,7 @@ class BookingServices {
                     .ASC
             )
                 .map {
-                    rowToBookings(it)
+                    rows.rowToBookings(it)
                 }.firstOrNull()
         }
     }
@@ -125,7 +126,7 @@ class BookingServices {
         db.query {
             (AppointmentResultTable leftJoin BookingsTable).select { BookingsTable.booking_patient eq patient_id }
                 .map {
-                    appointmentList.add(rowToAppointmentResult(it))
+                    appointmentList.add(rows.rowToAppointmentResult(it))
                 }
         }
         return appointmentList
@@ -141,7 +142,7 @@ class BookingServices {
             (AppointmentResultTable leftJoin BookingsTable).select { BookingsTable.booking_patient.eq(patient) }
                 .orderBy(AppointmentResultTable.result_id)
                 .map {
-                    rowToAppointmentResult(it)
+                    rows.rowToAppointmentResult(it)
                 }.last()
         }
     }
@@ -161,29 +162,4 @@ class BookingServices {
     }
 
 
-    /**
-     * @param row holds the result row from the query
-     * @return AppointmentResult object
-     */
-    private fun rowToAppointmentResult(row: ResultRow): AppointmentResult {
-        return AppointmentResult(
-            result = row[AppointmentResultTable.result],
-            booking_id = row[AppointmentResultTable.booking_id],
-            result_id = row[AppointmentResultTable.result_id]
-        )
-    }
-
-    /**
-     * @param row holds the result row from the query
-     * @return Bookings object
-     */
-    private fun rowToBookings(row: ResultRow): Bookings {
-        return Bookings(
-            booking_date_start = row[BookingsTable.booking_date_start].toString(),
-            booking_date_end = row[BookingsTable.booking_date_end].toString(),
-            booking_doctor = row[DoctorTable.doctor_name],
-            booking_id = row[BookingsTable.booking_id],
-            booking_patient = row[BookingsTable.booking_patient]
-        )
-    }
 }

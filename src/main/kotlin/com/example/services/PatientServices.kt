@@ -1,12 +1,8 @@
 package com.example.services
 
 import com.example.database.DatabaseManager
-import com.example.entities.ActivationTable
-import com.example.entities.DoctorTable
-import com.example.entities.PatientTable
-import com.example.models.Activation
-import com.example.models.Patient
-import com.example.models.PatientRegisterRequest
+import com.example.entities.*
+import com.example.models.*
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.plus
@@ -17,6 +13,7 @@ import java.time.LocalDate
  */
 class PatientServices {
     private val db = DatabaseManager
+    private val rows = ResultRows
 
     /**
      * find patient where email is the same as given
@@ -26,7 +23,7 @@ class PatientServices {
     suspend fun findPatientByEmail(email: String): Patient? {
         return db.query {
             PatientTable.select { PatientTable.patient_email.eq(email) }
-                .map { rowToPatient(it) }
+                .map { rows.rowToPatient(it) }
                 .singleOrNull()
         }
     }
@@ -89,7 +86,7 @@ class PatientServices {
                     activation_code
                 )
             }
-                .map { rowToActivation(it) }
+                .map { rows.rowToActivation(it) }
                 .singleOrNull()
         }
     }
@@ -137,36 +134,21 @@ class PatientServices {
     }
 
     /**
-     * @param row holds a result row of Activation table
-     * @return Activation object
+     * get the whole data stored in the database to the user
+     * @param patientId holds it of the patient which will get the data
      */
-    private fun rowToActivation(row: ResultRow): Activation {
-        return Activation(
-            activation_code = row[ActivationTable.activation_code],
-            patient_email = row[ActivationTable.patient_email]
-        )
+    suspend fun getAllData(patientId: Int)  {
+        return db.query {
+            (PatientTable innerJoin AppointmentResultTable innerJoin BookingsTable innerJoin PatientHistoryTable
+                    innerJoin PrescriptionsTable innerJoin SchedulesTable ).select {
+                        PatientTable.patient_id eq patientId
+            }.map {
+                rows.rowToMyData(it)
+            }.singleOrNull()
+        }
     }
 
-    /**
-     * This method transforms a database row into a Patient object
-     * @param row has the row that was retrieved from the database
-     * @return a Patient object
-     */
-    private fun rowToPatient(row: ResultRow): Patient {
-        return Patient(
-            patient_id = row[PatientTable.patient_id].toInt(),
-            patient_name = row[PatientTable.patient_name],
-            patient_email = row[PatientTable.patient_email],
-            patient_dob = row[PatientTable.patient_dob].toString(),
-            patient_weight = row[PatientTable.patient_weight],
-            patient_password = row[PatientTable.patient_password],
-            patient_gender = row[PatientTable.patient_gender],
-            patient_height = row[PatientTable.patient_height],
-            patient_active = row[PatientTable.patient_active],
-            patient_deaf = row[PatientTable.patient_deaf],
-            patient_doctor = row[PatientTable.patient_doctor]
-        )
-    }
+
 
 
 }

@@ -1,6 +1,7 @@
 package com.example.services
 
 import com.example.database.DatabaseManager
+import com.example.entities.BookingsTable
 import com.example.entities.SchedulesTable
 import com.example.models.AddScheduleRequest
 import com.example.models.Schedule
@@ -12,6 +13,7 @@ import java.time.LocalTime
 
 class ScheduleServices {
     private val db = DatabaseManager
+    private val rows = ResultRows
 
     /**
      * add a new schedule
@@ -35,12 +37,11 @@ class ScheduleServices {
      */
     suspend fun getScheduleOfDoctor(doctorId: Int, dayOfWeek: Int, day: LocalDateTime): List<Schedule> {
         val schedule: MutableList<Schedule> = mutableListOf()
-        print(day)
         db.query {
-            SchedulesTable.select { SchedulesTable.schedule_doctor eq doctorId }.andWhere {
+            (SchedulesTable innerJoin BookingsTable).select { SchedulesTable.schedule_doctor eq doctorId }.andWhere {
                 SchedulesTable.schedule_day_of_week eq dayOfWeek
             }.orderBy(SchedulesTable.schedule_start).map {
-                schedule.add(rowToSchedule(it))
+                schedule.add(rows.rowToSchedule(it))
             }
         }
         return schedule
@@ -56,18 +57,5 @@ class ScheduleServices {
         }
     }
 
-    /**
-     * this function turns a sql result into an object of type Schedule
-     * @param row holds the sql result from query
-     * @return object of type Schedule
-     */
-    private fun rowToSchedule(row: ResultRow): Schedule {
-        return Schedule(
-            schedule_id = row[SchedulesTable.schedule_id],
-            schedule_doctor = row[SchedulesTable.schedule_doctor],
-            schedule_day_of_week = row[SchedulesTable.schedule_day_of_week],
-            schedule_end = row[SchedulesTable.schedule_end].toString(),
-            schedule_start = row[SchedulesTable.schedule_start].toString()
-        )
-    }
+
 }

@@ -10,7 +10,8 @@ import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.update
 
 class DoctorServices {
-    val db = DatabaseManager
+    private val db = DatabaseManager
+    private val rows = ResultRows
 
     /**
      * find doctor where id is the same as given
@@ -20,7 +21,7 @@ class DoctorServices {
     suspend fun findDoctorById(doctorId: Int): Doctor? {
         return db.query {
             DoctorTable.select { DoctorTable.doctor_id eq doctorId }
-                .map { rowToDoctor(it) }
+                .map { rows.rowToDoctor(it) }
                 .singleOrNull()
         }
     }
@@ -51,7 +52,7 @@ class DoctorServices {
     suspend fun findDoctorByEmail(doctorEmail: String): Doctor? {
         return db.query {
             DoctorTable.select { DoctorTable.doctor_email.eq(doctorEmail) }
-                .map { rowToDoctor(it) }
+                .map { rows.rowToDoctor(it) }
                 .singleOrNull()
         }
     }
@@ -70,19 +71,5 @@ class DoctorServices {
     }
 
 
-    /**
-     * This method transforms a database row into a Doctor object
-     * @param row has the row that was retrieved from the database
-     * @return a Doctor object
-     */
-    private fun rowToDoctor(row: ResultRow): Doctor {
-        return Doctor(
-            doctor_id = row[DoctorTable.doctor_id],
-            doctor_email = row[DoctorTable.doctor_email],
-            doctor_name = row[DoctorTable.doctor_name],
-            doctor_password = row[DoctorTable.doctor_password],
-            doctor_patients_count = row[DoctorTable.doctor_patients_count],
-            doctor_sign_language = row[DoctorTable.doctor_sign_language]
-        )
-    }
+
 }

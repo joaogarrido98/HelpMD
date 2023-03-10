@@ -8,7 +8,8 @@ import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 
 class ActiveDoctorServices {
-    val db = DatabaseManager
+    private val db = DatabaseManager
+    private val rows = ResultRows
 
     /**
      * activate or deactivate a doctor on active doctor table
@@ -47,25 +48,11 @@ class ActiveDoctorServices {
         db.query {
             (ActiveDoctorTable innerJoin DoctorTable).selectAll().limit(20)
                 .map {
-                    doctorList.add(rowToDoctor(it))
+                    doctorList.add(rows.rowToDoctor(it))
                 }
         }
         return doctorList
     }
 
-    /**
-     * This method transforms a database row into a Doctor object
-     * @param row has the row that was retrieved from the database
-     * @return a Doctor object
-     */
-    private fun rowToDoctor(row: ResultRow): Doctor {
-        return Doctor(
-            doctor_id = row[DoctorTable.doctor_id],
-            doctor_email = row[DoctorTable.doctor_email],
-            doctor_name = row[DoctorTable.doctor_name],
-            doctor_password = row[DoctorTable.doctor_password],
-            doctor_patients_count = row[DoctorTable.doctor_patients_count],
-            doctor_sign_language = row[DoctorTable.doctor_sign_language]
-        )
-    }
+
 }

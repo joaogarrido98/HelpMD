@@ -9,7 +9,8 @@ import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.select
 
 class HistoryServices {
-    val db = DatabaseManager
+    private val db = DatabaseManager
+    private val rows = ResultRows
 
     /**
      * Add medical history to a specific patient
@@ -37,26 +38,9 @@ class HistoryServices {
     suspend fun findPatientHistory(patientId: Int): PatientHistory? {
         return db.query {
             PatientHistoryTable.select { PatientHistoryTable.patient_id.eq(patientId) }
-                .map { rowToPatientHistory(it) }
+                .map { rows.rowToPatientHistory(it) }
                 .singleOrNull()
         }
     }
 
-    /**
-     * This method transforms a database row into a PatientHistory object
-     * @param row has the row that was retrieved from the database
-     * @return a PatientHistory object
-     */
-    private fun rowToPatientHistory(row: ResultRow): PatientHistory {
-        return PatientHistory(
-            patient_id = row[PatientHistoryTable.patient_id],
-            history_id = row[PatientHistoryTable.history_id],
-            patient_family = row[PatientHistoryTable.patient_family],
-            patient_allergies = row[PatientHistoryTable.patient_allergies],
-            patient_blood = row[PatientHistoryTable.patient_blood],
-            patient_diseases = row[PatientHistoryTable.patient_diseases],
-            patient_lifestyle = row[PatientHistoryTable.patient_lifestyle],
-            patient_vaccines = row[PatientHistoryTable.patient_vaccines]
-        )
-    }
 }

@@ -257,7 +257,7 @@ fun Route.patientRoutes(patientServices: PatientServices) {
 
 
         /**
-         * This method deactivates the user=
+         * This method deactivates the user
          */
         post("patient/deactivate") {
             try {
@@ -270,6 +270,22 @@ fun Route.patientRoutes(patientServices: PatientServices) {
                 call.respond(ServerResponse(false, "Unable to deactivate account"))
             } catch (e: Exception) {
                 call.respond(ServerResponse(false, "Unable to deactivate account"))
+            }
+        }
+
+
+        /**
+         * get all the data associated with the user
+         */
+        get("patient/data"){
+            try {
+                val patient = call.principal<Patient>()
+                if (patient != null) {
+                  call.respond(ServerResponse(true, "My Data", patientServices.getAllData(patient.patient_id)))
+                }
+                call.respond(ServerResponse(false, "Unable to get data"))
+            } catch (e: Exception) {
+                call.respond(ServerResponse(false, "Unable to get data"))
             }
         }
     }

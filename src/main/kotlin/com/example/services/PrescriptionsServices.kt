@@ -14,6 +14,7 @@ import java.time.LocalDate
 
 class PrescriptionsServices {
     private val db = DatabaseManager
+    private val rows = ResultRows
 
     /**
      * Add a new prescription to the database
@@ -43,7 +44,7 @@ class PrescriptionsServices {
             (PrescriptionsTable innerJoin DoctorTable).select(where = PrescriptionsTable.patient_id.eq(patient))
                 .orderBy(PrescriptionsTable.prescription_date)
                 .map {
-                    rowToPrescriptions(it)
+                    rows.rowToPrescriptions(it)
                 }.last()
         }
     }
@@ -60,7 +61,7 @@ class PrescriptionsServices {
                     prescriptionId
                 )
             ).map {
-                rowToPrescriptions(it)
+                rows.rowToPrescriptions(it)
             }.singleOrNull()
         }
     }
@@ -103,28 +104,10 @@ class PrescriptionsServices {
                 PrescriptionsTable.patient_id.eq(patient) and
                         PrescriptionsTable.prescription_regular.eq(regular)
             }.orderBy(PrescriptionsTable.prescription_id to SortOrder.DESC).map {
-                prescriptionList.add(rowToPrescriptions(it))
+                prescriptionList.add(rows.rowToPrescriptions(it))
             }
         }
         return prescriptionList
     }
 
-    /**
-     * Turn the result row from sql into a Prescriptions object
-     * @param row holds a result row
-     * @return an object of Prescription type
-     */
-    private fun rowToPrescriptions(row: ResultRow): Prescriptions {
-        return Prescriptions(
-            patient_id = row[PrescriptionsTable.prescription_id],
-            prescription_date = row[PrescriptionsTable.prescription_date].toString(),
-            prescription_doctor = row[DoctorTable.doctor_name],
-            prescription_id = row[PrescriptionsTable.prescription_id],
-            prescription_dosage = row[PrescriptionsTable.prescription_dosage],
-            prescription_medicine = row[PrescriptionsTable.prescription_medicine],
-            prescription_regular = row[PrescriptionsTable.prescription_regular],
-            prescription_type = row[PrescriptionsTable.prescription_type],
-            prescription_used = row[PrescriptionsTable.prescription_used]
-        )
-    }
 }
