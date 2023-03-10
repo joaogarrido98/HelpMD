@@ -33,8 +33,9 @@ class ScheduleServices {
      * @param doctorId holds the id of the doctor we want to get the schedules
      * @return List of Schedule objects
      */
-    suspend fun getScheduleOfDoctor(doctorId: Int, dayOfWeek: Int): List<Schedule> {
+    suspend fun getScheduleOfDoctor(doctorId: Int, dayOfWeek: Int, day: LocalDateTime): List<Schedule> {
         val schedule: MutableList<Schedule> = mutableListOf()
+        print(day)
         db.query {
             SchedulesTable.select { SchedulesTable.schedule_doctor eq doctorId }.andWhere {
                 SchedulesTable.schedule_day_of_week eq dayOfWeek

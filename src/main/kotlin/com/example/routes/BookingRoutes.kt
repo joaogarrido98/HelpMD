@@ -63,7 +63,6 @@ fun Route.bookingRoutes(bookingServices: BookingServices) {
         }
 
 
-
         /**
          * add booking route
          * check if request is valid.

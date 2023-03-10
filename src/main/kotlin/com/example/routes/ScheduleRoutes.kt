@@ -9,6 +9,7 @@ import io.ktor.server.auth.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
+import java.time.LocalDateTime
 
 fun Route.schedulesRoutes(scheduleServices: ScheduleServices) {
     authenticate("doctor-interaction") {
@@ -50,11 +51,12 @@ fun Route.schedulesRoutes(scheduleServices: ScheduleServices) {
         /**
          * get all the schedules for a specific doctor
          */
-        get("schedules/{doctorId}/{week}"){
+        get("schedules/{doctorId}/{week}/{day}"){
             val doctorId : Int = call.parameters["doctorId"]!!.toInt()
             val dayOfWeek : Int = call.parameters["week"]!!.toInt()
+            val day : LocalDateTime = LocalDateTime.parse(call.parameters["day"])
             try{
-                val schedule = scheduleServices.getScheduleOfDoctor(doctorId, dayOfWeek)
+                val schedule = scheduleServices.getScheduleOfDoctor(doctorId, dayOfWeek, day)
                 call.respond(ServerResponse(true, "Schedule", schedule))
             }catch (e:Exception){
                 call.respond(ServerResponse(false, "Unable to get schedule"))
