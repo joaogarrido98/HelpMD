@@ -91,15 +91,15 @@ class BookingServices {
      * @param doctor_id holds the id for the doctor we want to find the upcoming booking
      * @return a booking
      */
-    suspend fun getUpcomingBookingsDoctor(doctor_id: Int): List<Bookings> {
+    suspend fun getUpcomingBookingsDoctor(doctor_id: Int): List<BookingsDoctor> {
         val currentTime = LocalDateTime.now()
-        val bookingsList = mutableListOf<Bookings>()
+        val bookingsList = mutableListOf<BookingsDoctor>()
         db.query {
             (BookingsTable innerJoin DoctorTable).select { BookingsTable.booking_doctor.eq(doctor_id) }.andWhere {
                 BookingsTable.booking_date_end.greaterEq(currentTime)
             }.orderBy(BookingsTable.booking_date_start)
                 .map {
-                    bookingsList.add(rows.rowToBookings(it))
+                    bookingsList.add(rows.rowToBookingsDoctor(it))
                 }
         }
         return bookingsList
