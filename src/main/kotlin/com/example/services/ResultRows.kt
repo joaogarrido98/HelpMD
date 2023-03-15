@@ -39,6 +39,26 @@ object ResultRows {
     }
 
     /**
+     * This method transforms a database row into a Patient object
+     * @param row has the row that was retrieved from the database
+     * @return a Patient object
+     */
+    fun rowToPatientDoctor(row: ResultRow): PatientDoctor {
+        return PatientDoctor(
+            patient_id = row[PatientTable.patient_id].toInt(),
+            patient_name = row[PatientTable.patient_name],
+            patient_email = row[PatientTable.patient_email],
+            patient_dob = row[PatientTable.patient_dob].toString(),
+            patient_weight = row[PatientTable.patient_weight],
+            patient_gender = row[PatientTable.patient_gender],
+            patient_height = row[PatientTable.patient_height],
+            patient_deaf = row[PatientTable.patient_deaf],
+        )
+    }
+
+
+
+    /**
      * This method transforms a database row into a Doctor object
      * @param row has the row that was retrieved from the database
      * @return a Doctor object

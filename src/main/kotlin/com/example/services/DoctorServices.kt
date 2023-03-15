@@ -4,10 +4,7 @@ import com.example.database.DatabaseManager
 import com.example.entities.BookingsTable
 import com.example.entities.DoctorTable
 import com.example.entities.PatientTable
-import com.example.models.Bookings
-import com.example.models.Doctor
-import com.example.models.DoctorRegisterRequest
-import com.example.models.Patient
+import com.example.models.*
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.greaterEq
@@ -79,12 +76,12 @@ class DoctorServices {
      * @param doctor_id holds the id for the doctor we want to find the patients
      * @return a list of patients
      */
-    suspend fun getDoctorPatients(doctor_id: Int): List<Patient> {
-        val patientList = mutableListOf<Patient>()
+    suspend fun getDoctorPatients(doctor_id: Int): List<PatientDoctor> {
+        val patientList = mutableListOf<PatientDoctor>()
         db.query {
             PatientTable.select { PatientTable.patient_doctor.eq(doctor_id) }
                 .map {
-                    patientList.add(rows.rowToPatient(it))
+                    patientList.add(rows.rowToPatientDoctor(it))
                 }
         }
         return patientList

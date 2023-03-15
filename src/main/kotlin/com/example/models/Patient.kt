@@ -23,6 +23,19 @@ data class Patient(
 ) : Principal
 
 
+data class PatientDoctor(
+    val patient_id: Int,
+    val patient_email: String,
+    val patient_name: String,
+    val patient_dob: String,
+    val patient_weight: Int,
+    val patient_height: Int,
+    val patient_gender: String,
+    val patient_deaf: Boolean,
+)
+
+
+
 data class PatientLoginRequest(
     val patient_email: String,
     val patient_password: String
