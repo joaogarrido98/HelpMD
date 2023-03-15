@@ -7,6 +7,7 @@ import com.example.tools.JwtManager
 import com.example.tools.MessageUtils
 import com.example.tools.ProjectUtils
 import io.ktor.server.application.*
+import io.ktor.server.auth.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
@@ -85,6 +86,18 @@ fun Route.doctorRoutes(doctorServices: DoctorServices) {
             call.respond(ServerResponse(true, "Account created"))
         } catch (e: Exception) {
             call.respond(ServerResponse(false, "Unable to create account"))
+        }
+    }
+
+    authenticate("doctor-interaction"){
+        get("doctor/patients"){
+            try{
+                val doctor = call.principal<Doctor>()!!.doctor_id
+                val patients = doctorServices.getDoctorPatients(doctor)
+                call.respond(ServerResponse(true, "Doctor Patients", patients))
+            }catch (e:Exception){
+                call.respond(ServerResponse(false,"Unable to get patients"))
+            }
         }
     }
 }

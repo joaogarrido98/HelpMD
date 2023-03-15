@@ -118,17 +118,13 @@ fun Route.bookingRoutes(bookingServices: BookingServices) {
 
     authenticate("doctor-interaction") {
         /**
-         * get the upcoming boolings for the doctors
+         * get the upcoming bookings for the doctors
          */
         get("bookings/upcoming/doctor") {
             try {
                 val doctor = call.principal<Doctor>()!!.doctor_id
                 val bookings = bookingServices.getUpcomingBookingsDoctor(doctor)
-                if (bookings == null) {
-                    call.respond(ServerResponse(false, "No upcoming booking"))
-                    return@get
-                }
-                call.respond(ServerResponse(true, "Upcoming Booking", bookings))
+                call.respond(ServerResponse(true, "Upcoming Bookings", bookings))
             } catch (e: Exception) {
                 call.respond(ServerResponse(false, "Unable to get booking"))
             }
