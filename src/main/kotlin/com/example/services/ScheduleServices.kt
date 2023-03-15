@@ -48,6 +48,22 @@ class ScheduleServices {
     }
 
     /**
+     * get all the schedules for a specific doctor
+     * @param doctorId holds the id of the doctor we want to get the schedules
+     * @return List of Schedule objects
+     */
+    suspend fun getAllSchedules(doctorId: Int): List<Schedule> {
+        val schedule: MutableList<Schedule> = mutableListOf()
+        db.query {
+            SchedulesTable.select { SchedulesTable.schedule_doctor eq doctorId }.orderBy(SchedulesTable.schedule_start)
+                .map {
+                    schedule.add(rows.rowToSchedule(it))
+                }
+        }
+        return schedule
+    }
+
+    /**
      * delete the schedule given by the id param
      * @param scheduleId holds the id of the schedule we want to delete
      */

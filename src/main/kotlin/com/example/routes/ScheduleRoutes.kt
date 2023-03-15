@@ -44,6 +44,19 @@ fun Route.schedulesRoutes(scheduleServices: ScheduleServices) {
                 call.respond(ServerResponse(false, "Unable to delete schedule"))
             }
         }
+
+        /**
+         * get all schedules for specific doctor
+         */
+        get("schedules/doctor"){
+            try{
+                val doctor = call.principal<Doctor>()!!.doctor_id
+                val schedules = scheduleServices.getAllSchedules(doctor)
+                call.respond(ServerResponse(true, "Doctor Schedules", schedules))
+            }catch (e:Exception){
+                call.respond(ServerResponse(false,"Unable to get schedules"))
+            }
+        }
     }
 
 

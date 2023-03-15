@@ -90,6 +90,9 @@ fun Route.doctorRoutes(doctorServices: DoctorServices) {
     }
 
     authenticate("doctor-interaction"){
+        /**
+         * get all patients for the specific doctor
+         */
         get("doctor/patients"){
             try{
                 val doctor = call.principal<Doctor>()!!.doctor_id
