@@ -1,10 +1,7 @@
 package com.example.services
 
 import com.example.database.DatabaseManager
-import com.example.entities.AppointmentResultTable
-import com.example.entities.BookingsTable
-import com.example.entities.DoctorTable
-import com.example.entities.PrescriptionsTable
+import com.example.entities.*
 import com.example.models.*
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
@@ -95,7 +92,9 @@ class BookingServices {
         val currentTime = LocalDateTime.now()
         val bookingsList = mutableListOf<BookingsDoctor>()
         db.query {
-            (BookingsTable innerJoin DoctorTable).select { BookingsTable.booking_doctor.eq(doctor_id) }.andWhere {
+            (BookingsTable innerJoin DoctorTable innerJoin PatientTable).select { BookingsTable.booking_doctor eq
+                doctor_id }
+                .andWhere {
                 BookingsTable.booking_date_end.greaterEq(currentTime)
             }.orderBy(BookingsTable.booking_date_start)
                 .map {
