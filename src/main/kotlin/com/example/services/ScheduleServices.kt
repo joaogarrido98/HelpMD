@@ -65,12 +65,16 @@ class ScheduleServices {
 
         val availableSchedules: MutableList<Schedule> = mutableListOf()
         for(schedule in schedules){
+            var found = false
             val date = day.plusHours(LocalTime.parse(schedule.schedule_start).hour.toLong())
             for(booking in bookings){
-                if (LocalDateTime.parse(booking.booking_date_start) != date){
-                    availableSchedules.add(schedule)
+                if (LocalDateTime.parse(booking.booking_date_start) == date){
+                    found = true
                     break
                 }
+            }
+            if(!found){
+                availableSchedules.add(schedule)
             }
         }
         return availableSchedules
