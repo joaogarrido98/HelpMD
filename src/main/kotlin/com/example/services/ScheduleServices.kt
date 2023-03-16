@@ -59,7 +59,7 @@ class ScheduleServices {
             }
         }
         val availableSchedules: List<Schedule> = schedules.filter { schedule ->
-            val date = day.plusHours(schedule.schedule_start.toLong())
+            val date = day.plusHours(LocalDateTime.parse(schedule.schedule_start).hour.toLong())
             println(date)
             bookings.any {
                 LocalDateTime.parse(it.booking_date_start) == date
