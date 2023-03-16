@@ -4,9 +4,12 @@ import com.example.database.DatabaseManager
 import com.example.entities.BookingsTable
 import com.example.entities.SchedulesTable
 import com.example.models.AddScheduleRequest
+import com.example.models.Bookings
 import com.example.models.Schedule
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
+import org.jetbrains.exposed.sql.javatime.date
+import org.jetbrains.exposed.sql.javatime.day
 import java.time.DayOfWeek
 import java.time.LocalDateTime
 import java.time.LocalTime
@@ -36,15 +39,31 @@ class ScheduleServices {
      * @return List of Schedule objects
      */
     suspend fun getScheduleOfDoctor(doctorId: Int, dayOfWeek: Int, day: LocalDateTime): List<Schedule> {
-        val schedule: MutableList<Schedule> = mutableListOf()
+        val schedules: MutableList<Schedule> = mutableListOf()
+        val bookings: MutableList<Bookings> = mutableListOf()
+        val startTime = day.withHour(0).withMinute(0).withSecond(0)
+        val endTime = startTime.plusDays(1)
         db.query {
-            (SchedulesTable innerJoin BookingsTable).select { SchedulesTable.schedule_doctor eq doctorId }.andWhere {
+            BookingsTable.select {
+                BookingsTable.booking_doctor eq doctorId
+            }.andWhere {
+                BookingsTable.booking_date_start.between(startTime, endTime)
+            }.map {
+                bookings.add(rows.rowToBookings(it))
+            }
+            SchedulesTable.select { SchedulesTable.schedule_doctor eq doctorId }.andWhere {
                 SchedulesTable.schedule_day_of_week eq dayOfWeek
             }.orderBy(SchedulesTable.schedule_start).map {
-                schedule.add(rows.rowToSchedule(it))
+                schedules.add(rows.rowToSchedule(it))
             }
         }
-        return schedule
+        val availableSchedules: List<Schedule> = schedules.filter { schedule ->
+            val date = day.plusHours(schedule.schedule_start.toLong())
+            bookings.any {
+                LocalDateTime.parse(it.booking_date_start) == date
+            }
+        }
+        return availableSchedules
     }
 
     /**

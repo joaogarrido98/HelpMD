@@ -79,7 +79,8 @@ class DoctorServices {
     suspend fun getDoctorPatients(doctor_id: Int): List<PatientDoctor> {
         val patientList = mutableListOf<PatientDoctor>()
         db.query {
-            PatientTable.select { PatientTable.patient_doctor.eq(doctor_id) }
+            PatientTable.select { PatientTable.patient_doctor.eq(doctor_id) }.andWhere { PatientTable.patient_active
+                .eq(true) }
                 .map {
                     patientList.add(rows.rowToPatientDoctor(it))
                 }
