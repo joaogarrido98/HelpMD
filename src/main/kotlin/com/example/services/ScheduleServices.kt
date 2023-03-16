@@ -14,6 +14,7 @@ import org.jetbrains.exposed.sql.javatime.day
 import java.time.DayOfWeek
 import java.time.LocalDateTime
 import java.time.LocalTime
+import javax.swing.text.MutableAttributeSet
 
 class ScheduleServices {
     private val db = DatabaseManager
@@ -62,13 +63,15 @@ class ScheduleServices {
             return schedules
         }
 
-        val availableSchedules: List<Schedule> = schedules.filter { schedule ->
+        val availableSchedules: MutableList<Schedule> = mutableListOf()
+        for(schedule in schedules){
             val date = day.plusHours(LocalTime.parse(schedule.schedule_start).hour.toLong())
-            bookings.any {
-                LocalDateTime.parse(it.booking_date_start) != date
+            for(booking in bookings){
+                if (LocalDateTime.parse(booking.booking_date_start) != date){
+                    availableSchedules.add(schedule)
+                }
             }
         }
-
         return availableSchedules
     }
 
