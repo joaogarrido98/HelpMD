@@ -2,6 +2,7 @@ package com.example.services
 
 import com.example.database.DatabaseManager
 import com.example.entities.BookingsTable
+import com.example.entities.DoctorTable
 import com.example.entities.SchedulesTable
 import com.example.models.AddScheduleRequest
 import com.example.models.Bookings
@@ -44,7 +45,7 @@ class ScheduleServices {
         val startTime = day.withHour(0).withMinute(0).withSecond(0)
         val endTime = startTime.plusDays(1)
         db.query {
-            BookingsTable.select {
+            (BookingsTable innerJoin DoctorTable).select {
                 BookingsTable.booking_doctor eq doctorId
             }.andWhere {
                 BookingsTable.booking_date_start.between(startTime, endTime)
@@ -59,6 +60,7 @@ class ScheduleServices {
         }
         val availableSchedules: List<Schedule> = schedules.filter { schedule ->
             val date = day.plusHours(schedule.schedule_start.toLong())
+            println(date)
             bookings.any {
                 LocalDateTime.parse(it.booking_date_start) == date
             }
