@@ -69,6 +69,7 @@ class ScheduleServices {
             for(booking in bookings){
                 if (LocalDateTime.parse(booking.booking_date_start) != date){
                     availableSchedules.add(schedule)
+                    break
                 }
             }
         }
