@@ -72,6 +72,7 @@ fun Route.schedulesRoutes(scheduleServices: ScheduleServices) {
                 val schedule = scheduleServices.getScheduleOfDoctor(doctorId, dayOfWeek, day)
                 call.respond(ServerResponse(true, "Schedule", schedule))
             }catch (e:Exception){
+                print(e.toString())
                 call.respond(ServerResponse(false, "Unable to get schedule"))
             }
         }
