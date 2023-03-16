@@ -58,12 +58,17 @@ class ScheduleServices {
                 schedules.add(rows.rowToSchedule(it))
             }
         }
+        if(bookings.isEmpty()){
+            return schedules
+        }
+
         val availableSchedules: List<Schedule> = schedules.filter { schedule ->
             val date = day.plusHours(LocalTime.parse(schedule.schedule_start).hour.toLong())
             bookings.any {
                 LocalDateTime.parse(it.booking_date_start) != date
             }
         }
+
         return availableSchedules
     }
 
