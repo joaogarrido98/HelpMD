@@ -68,13 +68,7 @@ class ScheduleServices {
             var found = false
             val date = day.plusHours(LocalTime.parse(schedule.schedule_start).hour.toLong()).plusMinutes(LocalTime
                 .parse(schedule.schedule_start).minute.toLong())
-            println("hereeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee")
-            println(date)
-            println("hereeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee")
             for(booking in bookings){
-                println("hereeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee")
-                println(booking.booking_date_start)
-                println("hereeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee")
                 if (LocalDateTime.parse(booking.booking_date_start) == date){
                     found = true
                     break
