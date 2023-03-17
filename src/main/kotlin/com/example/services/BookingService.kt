@@ -92,7 +92,7 @@ class BookingServices {
         val currentTime = LocalDateTime.now()
         val bookingsList = mutableListOf<BookingsDoctor>()
         db.query {
-            ((BookingsTable innerJoin DoctorTable) innerJoin PatientTable).select { BookingsTable.booking_doctor eq
+            (BookingsTable innerJoin DoctorTable innerJoin PatientTable).select { BookingsTable.booking_doctor eq
                 doctor_id }
                 .andWhere {
                 BookingsTable.booking_date_end.greaterEq(currentTime)
