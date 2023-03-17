@@ -101,6 +101,9 @@ object ResultRows {
         )
     }
 
+    /**
+     * 
+     */
     fun rowToBookingsDoctor(row:ResultRow): BookingsDoctor {
         return BookingsDoctor(
             booking_date_start = row[BookingsTable.booking_date_start].toString(),
@@ -108,6 +111,7 @@ object ResultRows {
             booking_doctor = row[BookingsTable.booking_doctor],
             booking_id = row[BookingsTable.booking_id],
             booking_patient = row[PatientTable.patient_name],
+            booking_patient_id = row[PatientTable.patient_id]
         )
     }
 

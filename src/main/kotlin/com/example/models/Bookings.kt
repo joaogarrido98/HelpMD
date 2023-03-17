@@ -14,7 +14,8 @@ data class BookingsDoctor(
     val booking_doctor : Int,
     val booking_patient : String,
     val booking_date_start : String,
-    val booking_date_end : String
+    val booking_date_end : String,
+    val booking_patient_id: Int
 )
 
 data class AddBookingsRequest(
