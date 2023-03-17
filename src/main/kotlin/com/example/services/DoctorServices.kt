@@ -29,6 +29,20 @@ class DoctorServices {
 
 
     /**
+     * find patient where id is the same as given
+     * @param patientId holds the id to find the user
+     * @return Patient object or null
+     */
+    suspend fun findPatientById(patientId: Int): PatientDoctor? {
+        return db.query {
+            PatientTable.select { PatientTable.patient_id eq patientId }
+                .map { rows.rowToPatientDoctor(it) }
+                .singleOrNull()
+        }
+    }
+
+
+    /**
      * register a doctor into the database and initialize patient count as 0
      * @param doctor holds a doctor register request object
      */

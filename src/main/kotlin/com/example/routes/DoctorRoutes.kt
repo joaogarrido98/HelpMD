@@ -102,5 +102,18 @@ fun Route.doctorRoutes(doctorServices: DoctorServices) {
                 call.respond(ServerResponse(false,"Unable to get patients"))
             }
         }
+
+        /**
+         * get specific patient searched
+         */
+        get("doctor/patient/{id}"){
+            val patientId = call.parameters["id"]?.toInt()
+            try{
+                val patient = patientId?.let { it1 -> doctorServices.findPatientById(it1) }
+                call.respond(ServerResponse(true, "Patient found", patient))
+            }catch (e:Exception){
+                call.respond(ServerResponse(false,"Unable to get patient"))
+            }
+        }
     }
 }
