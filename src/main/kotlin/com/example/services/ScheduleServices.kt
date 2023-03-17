@@ -66,14 +66,15 @@ class ScheduleServices {
         val availableSchedules: MutableList<Schedule> = mutableListOf()
         for(schedule in schedules){
             var found = false
-            val date = day.plusHours(LocalTime.parse(schedule.schedule_start).hour.toLong())
-            print("hereeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee")
-            print(date)
-            print("hereeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee")
+            val date = day.plusHours(LocalTime.parse(schedule.schedule_start).hour.toLong()).plusMinutes(LocalTime
+                .parse(schedule.schedule_start).minute.toLong())
+            println("hereeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee")
+            println(date)
+            println("hereeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee")
             for(booking in bookings){
-                print("hereeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee")
-                print(booking.booking_date_start)
-                print("hereeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee")
+                println("hereeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee")
+                println(booking.booking_date_start)
+                println("hereeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee")
                 if (LocalDateTime.parse(booking.booking_date_start) == date){
                     found = true
                     break
