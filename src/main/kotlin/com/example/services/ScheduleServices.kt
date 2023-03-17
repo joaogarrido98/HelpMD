@@ -69,7 +69,7 @@ class ScheduleServices {
             val date = day.plusHours(LocalTime.parse(schedule.schedule_start).hour.toLong()).plusMinutes(LocalTime
                 .parse(schedule.schedule_start).minute.toLong())
             for(booking in bookings){
-                if (LocalDateTime.parse(booking.booking_date_start) == date){
+                if (LocalDateTime.parse(booking.booking_date_start) == date || LocalDateTime.now().isAfter(date)){
                     found = true
                     break
                 }
