@@ -61,7 +61,7 @@ class BookingServices {
                 .booking_date_start)) }
                 .map {
                 rows.rowToBookings(it)
-            }.firstOrNull()
+            }.singleOrNull()
         }
     }
 
