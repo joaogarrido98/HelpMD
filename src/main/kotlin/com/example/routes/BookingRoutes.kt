@@ -79,6 +79,7 @@ fun Route.bookingRoutes(bookingServices: BookingServices) {
                 if(booking != null){
                     bookingServices.addBookings(request)
                     call.respond(ServerResponse(true, "Booking added"))
+                    return@post
                 }
                 call.respond(ServerResponse(false, "Booking already exists"))
             } catch (e: Exception) {
