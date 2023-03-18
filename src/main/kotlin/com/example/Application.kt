@@ -8,6 +8,7 @@ import com.fasterxml.jackson.core.util.DefaultIndenter
 import com.fasterxml.jackson.core.util.DefaultPrettyPrinter
 import com.fasterxml.jackson.databind.SerializationFeature
 import io.ktor.http.*
+import io.ktor.serialization.gson.*
 import io.ktor.serialization.jackson.*
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
@@ -17,6 +18,7 @@ import io.ktor.server.plugins.cors.routing.*
 import io.ktor.server.plugins.defaultheaders.*
 import io.ktor.server.routing.*
 import io.ktor.server.websocket.*
+import java.text.DateFormat
 import java.time.Duration
 
 fun main(args: Array<String>): Unit = io.ktor.server.netty.EngineMain.main(args)
@@ -43,12 +45,9 @@ fun Application.module() {
     install(DefaultHeaders)
 
     install(ContentNegotiation) {
-        jackson {
-            configure(SerializationFeature.INDENT_OUTPUT, true)
-            setDefaultPrettyPrinter(DefaultPrettyPrinter().apply {
-                indentArraysWith(DefaultPrettyPrinter.FixedSpaceIndenter.instance)
-                indentObjectsWith(DefaultIndenter("  ", "\n"))
-            })
+        gson {
+            setDateFormat(DateFormat.LONG)
+            setPrettyPrinting()
         }
     }
 

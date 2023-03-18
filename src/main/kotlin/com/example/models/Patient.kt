@@ -41,7 +41,6 @@ data class PatientDoctor(
 )
 
 
-
 data class PatientLoginRequest(
     val patient_email: String,
     val patient_password: String
