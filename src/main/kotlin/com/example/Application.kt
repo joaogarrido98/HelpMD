@@ -34,7 +34,6 @@ fun Application.module() {
     val bookingServices = BookingServices()
     val scheduleServices = ScheduleServices()
 
-
     install(CORS) {
         anyHost()
         allowHeader(HttpHeaders.ContentType)

@@ -18,7 +18,7 @@ object DatabaseManager {
      * connection to the database and creation of the tables
      */
     fun init() {
-        Database.connect(hikariLocal())
+        Database.connect(hikari())
         transaction {
             SchemaUtils.create(PatientTable)
             SchemaUtils.create(DoctorTable)
