@@ -50,6 +50,21 @@ class BookingServices {
     }
 
     /**
+     * get a specific booking according to the time
+     * @param booking holds the booking object
+     * @return booking object in case it exists or null
+     */
+    suspend fun findBooking(booking: AddBookingsRequest): Bookings? {
+        return db.query {
+            BookingsTable.select { BookingsTable.booking_date_start.eq(LocalDateTime.parse(booking
+                .booking_date_start)) }
+                .map {
+                rows.rowToBookings(it)
+            }.singleOrNull()
+        }
+    }
+
+    /**
      * @param booking holds a booking to add to database
      */
     suspend fun addBookings(booking: AddBookingsRequest) {
@@ -92,11 +107,13 @@ class BookingServices {
         val currentTime = LocalDateTime.now()
         val bookingsList = mutableListOf<BookingsDoctor>()
         db.query {
-            (BookingsTable innerJoin DoctorTable innerJoin PatientTable).select { BookingsTable.booking_doctor eq
-                doctor_id }
+            (BookingsTable innerJoin DoctorTable innerJoin PatientTable).select {
+                BookingsTable.booking_doctor eq
+                        doctor_id
+            }
                 .andWhere {
-                BookingsTable.booking_date_end.greaterEq(currentTime)
-            }.orderBy(BookingsTable.booking_date_start)
+                    BookingsTable.booking_date_end.greaterEq(currentTime)
+                }.orderBy(BookingsTable.booking_date_start)
                 .map {
                     bookingsList.add(rows.rowToBookingsDoctor(it))
                 }

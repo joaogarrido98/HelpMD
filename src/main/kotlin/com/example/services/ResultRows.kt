@@ -53,9 +53,14 @@ object ResultRows {
             patient_gender = row[PatientTable.patient_gender],
             patient_height = row[PatientTable.patient_height],
             patient_deaf = row[PatientTable.patient_deaf],
-        )
+            patient_allergies = row[PatientHistoryTable.patient_allergies],
+            patient_family = row[PatientHistoryTable.patient_family],
+            patient_lifestyle = row[PatientHistoryTable.patient_lifestyle],
+            patient_vaccines = row[PatientHistoryTable.patient_vaccines],
+            patient_diseases = row[PatientHistoryTable.patient_diseases],
+            patient_blood = row[PatientHistoryTable.patient_blood],
+            )
     }
-
 
 
     /**
@@ -102,9 +107,9 @@ object ResultRows {
     }
 
     /**
-     * 
+     *
      */
-    fun rowToBookingsDoctor(row:ResultRow): BookingsDoctor {
+    fun rowToBookingsDoctor(row: ResultRow): BookingsDoctor {
         return BookingsDoctor(
             booking_date_start = row[BookingsTable.booking_date_start].toString(),
             booking_date_end = row[BookingsTable.booking_date_end].toString(),
@@ -114,7 +119,6 @@ object ResultRows {
             booking_patient_id = row[PatientTable.patient_id]
         )
     }
-
 
 
     /**

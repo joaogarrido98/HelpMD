@@ -3,6 +3,7 @@ package com.example.services
 import com.example.database.DatabaseManager
 import com.example.entities.BookingsTable
 import com.example.entities.DoctorTable
+import com.example.entities.PatientHistoryTable
 import com.example.entities.PatientTable
 import com.example.models.*
 import org.jetbrains.exposed.sql.*
@@ -35,7 +36,7 @@ class DoctorServices {
      */
     suspend fun findPatientById(patientId: Int): PatientDoctor? {
         return db.query {
-            PatientTable.select { PatientTable.patient_id eq patientId }
+            (PatientTable innerJoin PatientHistoryTable).select { PatientTable.patient_id eq patientId }
                 .map { rows.rowToPatientDoctor(it) }
                 .singleOrNull()
         }

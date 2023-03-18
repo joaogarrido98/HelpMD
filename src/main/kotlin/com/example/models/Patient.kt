@@ -32,6 +32,12 @@ data class PatientDoctor(
     val patient_height: Int,
     val patient_gender: String,
     val patient_deaf: Boolean,
+    val patient_allergies: String,
+    val patient_family: String,
+    val patient_lifestyle: String,
+    val patient_vaccines: String,
+    val patient_diseases: String,
+    val patient_blood: String
 )
 
 

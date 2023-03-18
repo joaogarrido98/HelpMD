@@ -75,8 +75,12 @@ fun Route.bookingRoutes(bookingServices: BookingServices) {
                 return@post
             }
             try {
-                bookingServices.addBookings(request)
-                call.respond(ServerResponse(true, "Booking added"))
+                val booking = bookingServices.findBooking(request)
+                if(booking != null){
+                    bookingServices.addBookings(request)
+                    call.respond(ServerResponse(true, "Booking added"))
+                }
+                call.respond(ServerResponse(false, "Booking already exists"))
             } catch (e: Exception) {
                 call.respond(ServerResponse(false, "Unable to add booking"))
             }
