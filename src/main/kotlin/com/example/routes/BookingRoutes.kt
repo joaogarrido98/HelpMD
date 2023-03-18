@@ -76,7 +76,7 @@ fun Route.bookingRoutes(bookingServices: BookingServices) {
             }
             try {
                 val booking = bookingServices.findBooking(request)
-                if(booking != null){
+                if(booking == null){
                     bookingServices.addBookings(request)
                     call.respond(ServerResponse(true, "Booking added"))
                     return@post
