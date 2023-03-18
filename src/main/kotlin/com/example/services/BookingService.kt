@@ -56,11 +56,12 @@ class BookingServices {
      */
     suspend fun findBooking(booking: AddBookingsRequest): Bookings? {
         return db.query {
-            BookingsTable.select { BookingsTable.booking_date_start.eq(LocalDateTime.parse(booking
+            (BookingsTable innerJoin DoctorTable).select { BookingsTable.booking_date_start.eq(LocalDateTime.parse
+                (booking
                 .booking_date_start)) }
                 .map {
                 rows.rowToBookings(it)
-            }.singleOrNull()
+            }.firstOrNull()
         }
     }
 
