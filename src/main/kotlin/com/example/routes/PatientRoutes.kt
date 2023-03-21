@@ -32,19 +32,18 @@ fun Route.patientRoutes(patientServices: PatientServices) {
         }
         try {
             val patient: Patient? = patientServices.findPatientByEmail(request.patient_email)
-            if (patient == null) {
-                call.respond(ServerResponse(false, "User does not exist"))
-                return@post
+            if (patient != null) {
+                if (patient.patient_password != HashingUtils.hash(request.patient_password)) {
+                    call.respond(ServerResponse(false, "User email or password incorrect"))
+                    return@post
+                }
+                if (!patient.patient_active) {
+                    call.respond(ServerResponse(false, "Account not active"))
+                    return@post
+                }
+                call.respond(ServerResponse(true, JwtManager.generateTokenPatient(patient), patient))
             }
-            if (patient.patient_password != HashingUtils.hash(request.patient_password)) {
-                call.respond(ServerResponse(false, "User email or password incorrect"))
-                return@post
-            }
-            if (!patient.patient_active) {
-                call.respond(ServerResponse(false, "Account not active"))
-                return@post
-            }
-            call.respond(ServerResponse(true, JwtManager.generateTokenPatient(patient), patient))
+            call.respond(ServerResponse(false, "Unable to login"))
         } catch (e: Exception) {
             call.respond(ServerResponse(false, "Unable to login"))
         }

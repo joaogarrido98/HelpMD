@@ -65,14 +65,13 @@ fun Route.schedulesRoutes(scheduleServices: ScheduleServices) {
          * get all the schedules for a specific doctor
          */
         get("schedules/{doctorId}/{week}/{day}"){
-            val doctorId : Int = call.parameters["doctorId"]!!.toInt()
-            val dayOfWeek : Int = call.parameters["week"]!!.toInt()
-            val day : LocalDateTime = LocalDateTime.parse(call.parameters["day"])
             try{
+                val doctorId : Int = call.parameters["doctorId"]!!.toInt()
+                val dayOfWeek : Int = call.parameters["week"]!!.toInt()
+                val day : LocalDateTime = LocalDateTime.parse(call.parameters["day"])
                 val schedule = scheduleServices.getScheduleOfDoctor(doctorId, dayOfWeek, day)
                 call.respond(ServerResponse(true, "Schedule", schedule))
             }catch (e:Exception){
-                print(e.toString())
                 call.respond(ServerResponse(false, "Unable to get schedule"))
             }
         }
