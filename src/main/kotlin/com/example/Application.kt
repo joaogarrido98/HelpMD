@@ -95,5 +95,6 @@ fun Application.module() {
         prescriptionsRoutes(prescriptionsServices)
         bookingRoutes(bookingServices)
         schedulesRoutes(scheduleServices)
+        callRoutes()
     }
 }
