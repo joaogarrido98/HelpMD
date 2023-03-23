@@ -55,7 +55,6 @@ fun Application.module() {
         timeout = Duration.ofSeconds(15)
         maxFrameSize = Long.MAX_VALUE
         masking = false
-        contentConverter = JacksonWebsocketContentConverter()
     }
 
     install(Authentication) {
