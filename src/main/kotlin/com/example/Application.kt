@@ -55,6 +55,7 @@ fun Application.module() {
         timeout = Duration.ofSeconds(15)
         maxFrameSize = Long.MAX_VALUE
         masking = false
+        contentConverter = GsonWebsocketContentConverter()
     }
 
     install(Authentication) {

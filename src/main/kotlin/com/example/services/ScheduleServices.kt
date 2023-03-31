@@ -59,23 +59,24 @@ class ScheduleServices {
                 schedules.add(rows.rowToSchedule(it))
             }
         }
-        if(bookings.isEmpty()){
-            return schedules
-        }
-
         val availableSchedules: MutableList<Schedule> = mutableListOf()
-        for(schedule in schedules){
+        for (schedule in schedules) {
             var found = false
-            val date = day.plusHours(LocalTime.parse(schedule.schedule_start).hour.toLong()).plusMinutes(LocalTime
-                .parse(schedule.schedule_start).minute.toLong())
-            for(booking in bookings){
-                if (LocalDateTime.parse(booking.booking_date_start) == date || LocalDateTime.now().isAfter(date)){
-                    found = true
-                    break
-                }
-            }
-            if(!found){
+            val date = day.plusHours(LocalTime.parse(schedule.schedule_start).hour.toLong()).plusMinutes(
+                LocalTime.parse(schedule.schedule_start).minute.toLong()
+            )
+            if (bookings.isEmpty() && LocalDateTime.now().isAfter(date)) {
                 availableSchedules.add(schedule)
+            } else {
+                for (booking in bookings) {
+                    if (LocalDateTime.parse(booking.booking_date_start) == date || LocalDateTime.now().isAfter(date)) {
+                        found = true
+                        break
+                    }
+                }
+                if (!found) {
+                    availableSchedules.add(schedule)
+                }
             }
         }
         return availableSchedules

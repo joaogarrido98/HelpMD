@@ -1,6 +1,5 @@
 package com.example.routes
 
-import com.example.models.ServerResponse
 import io.ktor.server.routing.*
 import io.ktor.server.websocket.*
 import io.ktor.websocket.*
@@ -8,30 +7,39 @@ import java.util.*
 import kotlin.collections.LinkedHashSet
 
 fun Route.callRoutes() {
-    class WebsocketUtil(val session: WebSocketServerSession, userType: Boolean, user: Int) {
-        val userId: Int = user
-        val type: Boolean = userType
-    }
+   data class Connection(val session: DefaultWebSocketSession, val type: Boolean)
 
-    val connections = Collections.synchronizedSet<WebsocketUtil?>(LinkedHashSet())
+    val connections = Collections.synchronizedSet<Connection?>(LinkedHashSet())
+    //doctor or user joins
+
+    //if is doctor
+    // if there's no one there send "connected" and then in frontend doctor side creates offer
+    // when user joins send "ready"
+    // on ready send offer to other user and wait for answer
+
+    //on app I show a screen until the doctor as created an offer and sent it over
 
     webSocket("call/{booking}") {
         val type = call.request.queryParameters["type"].toBoolean()
-        val user = call.parameters["user"]!!.toInt()
-        val thisConnection = WebsocketUtil(this, type, user)
+        val thisConnection = Connection(this, type)
         connections += thisConnection
+        //when both are connected tell doctor to start
+        if (connections.size == 2) {
+            connections.first {
+                it.type
+            }.session.send("ready connected")
+        }
         try {
-            send("You are connected! There are ${connections.count()} users here.")
             for (frame in incoming) {
                 frame as? Frame.Text ?: continue
-                val receivedText = frame.readText()
-                val textWithUsername = "[${thisConnection.userId}]: $receivedText"
                 connections.forEach {
-                    it.session.send(textWithUsername)
+                    if (it.type != thisConnection.type) {
+                        it.session.send(frame.readText())
+                    }
                 }
             }
         } catch (e: Exception) {
-            sendSerialized(ServerResponse(false, e.localizedMessage))
+            send(e.toString())
         } finally {
             connections -= thisConnection
         }
