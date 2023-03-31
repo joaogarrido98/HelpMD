@@ -4,12 +4,8 @@ import com.example.database.DatabaseManager
 import com.example.routes.*
 import com.example.services.*
 import com.example.tools.JwtManager
-import com.fasterxml.jackson.core.util.DefaultIndenter
-import com.fasterxml.jackson.core.util.DefaultPrettyPrinter
-import com.fasterxml.jackson.databind.SerializationFeature
 import io.ktor.http.*
 import io.ktor.serialization.gson.*
-import io.ktor.serialization.jackson.*
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
 import io.ktor.server.auth.jwt.*
@@ -17,9 +13,7 @@ import io.ktor.server.plugins.contentnegotiation.*
 import io.ktor.server.plugins.cors.routing.*
 import io.ktor.server.plugins.defaultheaders.*
 import io.ktor.server.routing.*
-import io.ktor.server.websocket.*
 import java.text.DateFormat
-import java.time.Duration
 
 fun main(args: Array<String>): Unit = io.ktor.server.netty.EngineMain.main(args)
 
@@ -48,14 +42,6 @@ fun Application.module() {
             setDateFormat(DateFormat.LONG)
             setPrettyPrinting()
         }
-    }
-
-    install(WebSockets) {
-        pingPeriod = Duration.ofSeconds(15)
-        timeout = Duration.ofSeconds(15)
-        maxFrameSize = Long.MAX_VALUE
-        masking = false
-        contentConverter = GsonWebsocketContentConverter()
     }
 
     install(Authentication) {
@@ -96,6 +82,5 @@ fun Application.module() {
         prescriptionsRoutes(prescriptionsServices)
         bookingRoutes(bookingServices)
         schedulesRoutes(scheduleServices)
-        callRoutes()
     }
 }
