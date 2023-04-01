@@ -65,7 +65,8 @@ class ScheduleServices {
             val date = day.plusHours(LocalTime.parse(schedule.schedule_start).hour.toLong()).plusMinutes(
                 LocalTime.parse(schedule.schedule_start).minute.toLong()
             )
-            if (bookings.isEmpty() && !LocalDateTime.now().isAfter(date)) {
+            print(bookings.isEmpty() && LocalDateTime.now().isBefore(date))
+            if (bookings.isEmpty() && LocalDateTime.now().isBefore(date)) {
                 availableSchedules.add(schedule)
             } else {
                 for (booking in bookings) {
