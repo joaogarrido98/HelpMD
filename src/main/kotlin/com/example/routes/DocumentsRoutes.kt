@@ -19,7 +19,6 @@ fun Route.documentsRoutes(documentsServices : DocumentsServices) {
             val multipartData = call.receiveMultipart()
             var fileDescription = ""
             var fileName = ""
-            val newFileName = "${patient}-${UUID.randomUUID()}"
             multipartData.forEachPart { part ->
                 when (part) {
                     is PartData.FormItem -> {
@@ -27,16 +26,17 @@ fun Route.documentsRoutes(documentsServices : DocumentsServices) {
                     }
 
                     is PartData.FileItem -> {
-                        fileName = part.originalFileName as String
+                        val name = part.originalFileName as String
+                        fileName = "${UUID.randomUUID()}-$name"
                         val fileBytes = part.streamProvider().readBytes()
-                        File("uploads/$newFileName").writeBytes(fileBytes)
+                        File("uploads/$fileName").writeBytes(fileBytes)
                     }
 
                     else -> {}
                 }
                 part.dispose()
             }
-            call.respondText("$fileDescription is uploaded to 'uploads/$newFileName'")
+            call.respondText("$fileDescription is uploaded to 'uploads/$fileName'")
         }
     }
 }
