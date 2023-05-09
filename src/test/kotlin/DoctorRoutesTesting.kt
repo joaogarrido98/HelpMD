@@ -18,7 +18,7 @@ class DoctorRoutesTesting {
         }
         val response: ServerResponse = client.post("/doctor/register") {
             contentType(ContentType.Application.Json)
-            setBody(DoctorRegisterRequest(doctor_email = "pedro@gmail.com", doctor_password = "thispassword",
+            setBody(Doctor(doctor_email = "pedro@gmail.com", doctor_password = "thispassword",
                 doctor_name = "Pedro Garrido", doctor_sign_language = false))
         }.body()
         assertEquals(true, response.success)
@@ -33,7 +33,7 @@ class DoctorRoutesTesting {
         }
         val response: ServerResponse = client.post("/doctor/register") {
             contentType(ContentType.Application.Json)
-            setBody(DoctorRegisterRequest(doctor_email = "", doctor_password = "thispassword",
+            setBody(Doctor(doctor_email = "", doctor_password = "thispassword",
                 doctor_name = "Pedro Garrido", doctor_sign_language = false))
         }.body()
         assertEquals("Bad Request", response.message)
@@ -49,7 +49,7 @@ class DoctorRoutesTesting {
         }
         val response: ServerResponse = client.post("/doctor/login") {
             contentType(ContentType.Application.Json)
-            setBody(DoctorLoginRequest(doctor_email = "pedro@gmail.com", doctor_password = "thispassword"))
+            setBody(Doctor(doctor_email = "pedro@gmail.com", doctor_password = "thispassword"))
         }.body()
         assertEquals(true, response.success)
     }
@@ -63,7 +63,7 @@ class DoctorRoutesTesting {
         }
         val response: ServerResponse = client.post("/doctor/login") {
             contentType(ContentType.Application.Json)
-            setBody(DoctorLoginRequest(doctor_email = "", doctor_password = "thispassword"))
+            setBody(Doctor(doctor_email = "", doctor_password = "thispassword"))
         }.body()
         assertEquals("Bad Request", response.message)
     }
@@ -77,7 +77,7 @@ class DoctorRoutesTesting {
         }
         val response: ServerResponse = client.post("/doctor/login") {
             contentType(ContentType.Application.Json)
-            setBody(DoctorLoginRequest(doctor_email = "pedro@gmail.com", doctor_password = "dwa"))
+            setBody(Doctor(doctor_email = "pedro@gmail.com", doctor_password = "dwa"))
         }.body()
         assertEquals("Email or password incorrect", response.message)
     }

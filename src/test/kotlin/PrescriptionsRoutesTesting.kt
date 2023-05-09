@@ -1,5 +1,4 @@
-
-import com.example.models.PrescriptionsAddRequest
+import com.example.models.Prescriptions
 import com.example.models.ServerResponse
 import io.ktor.client.call.*
 import io.ktor.client.plugins.contentnegotiation.*
@@ -81,9 +80,11 @@ class PrescriptionsRoutesTesting {
         val response: ServerResponse = client.post("/prescriptions/add") {
             contentType(ContentType.Application.Json)
             bearerAuth(doctorJwt)
-            setBody(PrescriptionsAddRequest(patient_id = 1, prescription_type = "Pill", prescription_regular = true,
+            setBody(
+                Prescriptions(patient_id = 1, prescription_type = "Pill", prescription_regular = true,
                 prescription_medicine =  "Paracetamol", prescription_dosage = "30 pills a day", prescription_doctor =
-                1))
+                1)
+            )
         }.body()
         assertEquals(true, response.success)
     }
@@ -98,7 +99,7 @@ class PrescriptionsRoutesTesting {
         val response: ServerResponse = client.post("/prescriptions/add") {
             contentType(ContentType.Application.Json)
             bearerAuth(doctorJwt)
-            setBody(PrescriptionsAddRequest(patient_id = 1, prescription_type = "Pill", prescription_regular = true,
+            setBody(Prescriptions(patient_id = 1, prescription_type = "Pill", prescription_regular = true,
                 prescription_medicine =  "", prescription_dosage = "30 pills a day", prescription_doctor =
                 1))
         }.body()

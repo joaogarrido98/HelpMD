@@ -1,26 +1,18 @@
 package com.example.models
 
 data class Prescriptions(
-    val prescription_id: Int,
-    val patient_id: Int,
-    val prescription_date: String,
-    val prescription_regular: Boolean,
-    val prescription_doctor: String,
-    val prescription_medicine: String,
-    val prescription_dosage: String,
-    val prescription_type : String,
-    val prescription_used : Boolean
-)
-
-data class PrescriptionsAddRequest(
-    val patient_id: Int,
-    val prescription_regular: Boolean,
-    val prescription_medicine: String,
-    val prescription_dosage: String,
-    var prescription_doctor: Int?,
-    val prescription_type : String
+    val prescription_id: Int? = null,
+    val patient_id: Int? = null,
+    val prescription_date: String? = null,
+    val prescription_regular: Boolean? = null,
+    var prescription_doctor: Any? = null,
+    val prescription_medicine: String? = null,
+    val prescription_dosage: String? = null,
+    val prescription_type : String? = null,
+    val prescription_used : Boolean? = null
 ){
     fun isValid(): Boolean {
-        return !(this.prescription_medicine.isEmpty() || this.prescription_dosage.isEmpty()|| this.prescription_type.isEmpty())
+        return !(this.prescription_medicine.isNullOrEmpty() || this.prescription_dosage.isNullOrEmpty()|| this.prescription_type
+            .isNullOrEmpty())
     }
 }

@@ -20,10 +20,9 @@ object DatabaseManager {
     fun init() {
         Database.connect(hikari())
         transaction {
-            SchemaUtils.create(PatientTable)
             SchemaUtils.create(DoctorTable)
+            SchemaUtils.create(PatientTable)
             SchemaUtils.create(ActivationTable)
-            SchemaUtils.create(ActiveDoctorTable)
             SchemaUtils.create(SchedulesTable)
             SchemaUtils.create(PrescriptionsTable)
             SchemaUtils.create(PatientHistoryTable)
@@ -51,22 +50,12 @@ object DatabaseManager {
     }
 
     /**
-     * server configuration for localhost
+     * function that takes a block as parameter and executes it inside a coroutine
+     * @param block holds a unit of code
      */
-    private fun hikariLocal(): HikariDataSource {
-        val config = HikariConfig()
-        config.driverClassName = System.getenv("JDBC_DRIVER")
-        config.jdbcUrl = System.getenv("DATABASE_URL")
-        config.maximumPoolSize = 3
-        config.isAutoCommit = false
-        config.transactionIsolation = "TRANSACTION_REPEATABLE_READ"
-        config.validate()
-        return HikariDataSource(config)
+    suspend fun <T> query(block: () -> T): T = withContext(Dispatchers.IO) {
+            transaction {
+                block()
+            }
     }
-
-
-    /**
-     * function that takes a function as parameter and executes it inside a coroutine
-     */
-    suspend fun <T> query(block: () -> T): T = withContext(Dispatchers.IO) { transaction { block() } }
 }

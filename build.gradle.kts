@@ -50,7 +50,6 @@ dependencies {
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version")
     testImplementation("io.ktor:ktor-client-content-negotiation:$kotlin_version")
     implementation("io.ktor:ktor-serialization-gson:$ktor_version")
-    implementation("io.socket:socket.io-server:4.0.1")
     //third party
     implementation("com.sendgrid:sendgrid-java:4.9.3")
     implementation("com.zaxxer:HikariCP:5.0.1")
@@ -69,6 +68,7 @@ val compileKotlin: KotlinCompile by tasks
 compileKotlin.kotlinOptions {
     jvmTarget = "1.8"
 }
+
 val compileTestKotlin: KotlinCompile by tasks
 compileTestKotlin.kotlinOptions {
     jvmTarget = "1.8"

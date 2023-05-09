@@ -1,5 +1,4 @@
-import com.example.models.AddBookingsRequest
-import com.example.models.AddScheduleRequest
+import com.example.models.Schedule
 import com.example.models.ServerResponse
 import io.ktor.client.call.*
 import io.ktor.client.plugins.contentnegotiation.*
@@ -80,7 +79,7 @@ class SchedulesRoutesTesting {
         val response: ServerResponse = client.post("/schedules/add") {
             contentType(ContentType.Application.Json)
             bearerAuth(doctorJwt)
-            setBody(AddScheduleRequest(1,2,"20:00", "21:00"))
+            setBody(Schedule(schedule_doctor = 1, schedule_day_of_week = 2, schedule_start = "20:00", schedule_end = "21:00"))
         }.body()
         assertEquals("Schedule added", response.message)
     }
@@ -95,7 +94,8 @@ class SchedulesRoutesTesting {
         val response: ServerResponse = client.post("/schedules/add") {
             contentType(ContentType.Application.Json)
             bearerAuth(doctorJwt)
-            setBody(AddScheduleRequest(1,2,"", "21:00"))
+            setBody(Schedule(schedule_doctor = 1, schedule_day_of_week = 2, schedule_start = "20:00", schedule_end =
+            "21:00"))
         }.body()
         assertEquals("Bad Request", response.message)
     }

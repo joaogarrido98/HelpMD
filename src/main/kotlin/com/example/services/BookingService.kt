@@ -54,7 +54,7 @@ class BookingServices {
      * @param booking holds the booking object
      * @return booking object in case it exists or null
      */
-    suspend fun findBooking(booking: AddBookingsRequest): Bookings? {
+    suspend fun findBooking(booking: Bookings): Bookings? {
         return db.query {
             (BookingsTable innerJoin DoctorTable).select {
                 BookingsTable.booking_date_start.eq(
@@ -74,11 +74,11 @@ class BookingServices {
     /**
      * @param booking holds a booking to add to database
      */
-    suspend fun addBookings(booking: AddBookingsRequest) {
+    suspend fun addBookings(booking: Bookings) {
         db.query {
             BookingsTable.insert {
-                it[booking_patient] = booking.booking_patient
-                it[booking_doctor] = booking.booking_doctor
+                it[booking_patient] = booking.booking_patient as Int
+                it[booking_doctor] = booking.booking_doctor as Int
                 it[booking_date_start] = LocalDateTime.parse(booking.booking_date_start)
                 it[booking_date_end] = LocalDateTime.parse(booking.booking_date_end)
             }
@@ -110,16 +110,16 @@ class BookingServices {
      * @param doctor_id holds the id for the doctor we want to find the upcoming booking
      * @return a booking
      */
-    suspend fun getUpcomingBookingsDoctor(doctor_id: Int): List<BookingsDoctor> {
+    suspend fun getUpcomingBookingsDoctor(doctor_id: Int): List<Bookings> {
         val currentTime = LocalDateTime.now()
-        val bookingsList = mutableListOf<BookingsDoctor>()
+        val bookingsList = mutableListOf<Bookings>()
         db.query {
             (BookingsTable innerJoin PatientTable).select {
                 BookingsTable.booking_doctor eq
                         doctor_id
             }.andWhere {
-                    BookingsTable.booking_date_end.greaterEq(currentTime)
-                }.orderBy(BookingsTable.booking_date_start)
+                BookingsTable.booking_date_end.greaterEq(currentTime)
+            }.orderBy(BookingsTable.booking_date_start)
                 .map {
                     bookingsList.add(rows.rowToBookingsDoctor(it))
                 }
@@ -173,7 +173,7 @@ class BookingServices {
      * add a result for appointment results
      * @param appointmentResult holds AddAppointmentResult object
      */
-    suspend fun addAppointmentResult(appointmentResult: AddAppointmentResult) {
+    suspend fun addAppointmentResult(appointmentResult: AppointmentResult) {
         db.query {
             AppointmentResultTable.insert {
                 it[result] = appointmentResult.result

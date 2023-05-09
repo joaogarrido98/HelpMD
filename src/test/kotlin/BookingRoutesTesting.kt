@@ -1,4 +1,4 @@
-import com.example.models.AddBookingsRequest
+import com.example.models.Bookings
 import com.example.models.ServerResponse
 import io.ktor.client.call.*
 import io.ktor.client.plugins.contentnegotiation.*
@@ -50,7 +50,7 @@ class BookingRoutesTesting {
         val response: ServerResponse = client.post("/bookings/add") {
             contentType(ContentType.Application.Json)
             bearerAuth(jwt)
-            setBody(AddBookingsRequest(booking_doctor = 1, booking_patient = 2, booking_date_start =
+            setBody(Bookings(booking_doctor = 1, booking_patient = 2, booking_date_start =
             "2023-03-20T19:00:00", booking_date_end =  "2023-03-20T20:00:00"))
         }.body()
         assertEquals(true, response.success)
@@ -66,7 +66,7 @@ class BookingRoutesTesting {
         val response: ServerResponse = client.post("/bookings/add") {
             contentType(ContentType.Application.Json)
             bearerAuth(jwt)
-            setBody(AddBookingsRequest(booking_doctor = 1, booking_patient = 2, booking_date_start =
+            setBody(Bookings(booking_doctor = 1, booking_patient = 2, booking_date_start =
             "2023-03-19T19:00:00", booking_date_end =  "2023-03-19T19:00:00"))
         }.body()
         assertEquals("Booking already exists", response.message)
@@ -82,7 +82,7 @@ class BookingRoutesTesting {
         val response: ServerResponse = client.post("/bookings/add") {
             contentType(ContentType.Application.Json)
             bearerAuth(jwt)
-            setBody(AddBookingsRequest(booking_doctor = 1, booking_patient = 2, booking_date_start =
+            setBody(Bookings(booking_doctor = 1, booking_patient = 2, booking_date_start =
             "2023-03-19T19:00:00", booking_date_end =  ""))
         }.body()
         assertEquals("Bad Request", response.message)
@@ -102,6 +102,5 @@ class BookingRoutesTesting {
         assertEquals(true, response.success)
     }
 
-    //test appointement results add and get
 
 }

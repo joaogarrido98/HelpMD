@@ -1,15 +1,11 @@
 package com.example.services
 
 import com.example.database.DatabaseManager
-import com.example.entities.BookingsTable
 import com.example.entities.DoctorTable
 import com.example.entities.PatientHistoryTable
 import com.example.entities.PatientTable
 import com.example.models.*
 import org.jetbrains.exposed.sql.*
-import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
-import org.jetbrains.exposed.sql.SqlExpressionBuilder.greaterEq
-import java.time.LocalDateTime
 
 class DoctorServices {
     private val db = DatabaseManager
@@ -47,14 +43,14 @@ class DoctorServices {
      * register a doctor into the database and initialize patient count as 0
      * @param doctor holds a doctor register request object
      */
-    suspend fun addDoctor(doctor: DoctorRegisterRequest) {
+    suspend fun addDoctor(doctor: Doctor) {
         db.query {
             DoctorTable.insert {
-                it[doctor_email] = doctor.doctor_email
-                it[doctor_name] = doctor.doctor_name
-                it[doctor_password] = doctor.doctor_password
+                it[doctor_email] = doctor.doctor_email as String
+                it[doctor_name] = doctor.doctor_name as String
+                it[doctor_password] = doctor.doctor_password as String
                 it[doctor_patients_count] = 0
-                it[doctor_sign_language] = doctor.doctor_sign_language
+                it[doctor_sign_language] = doctor.doctor_sign_language as Boolean
             }
         }
     }

@@ -1,5 +1,4 @@
-import com.example.models.AddBookingsRequest
-import com.example.models.AddPatientHistoryRequest
+import com.example.models.PatientHistory
 import com.example.models.ServerResponse
 import io.ktor.client.call.*
 import io.ktor.client.plugins.contentnegotiation.*
@@ -37,7 +36,7 @@ class PatientHistoryRoutesTesting {
         val response: ServerResponse = client.post("/patient/history") {
             contentType(ContentType.Application.Json)
             bearerAuth(jwt)
-            setBody(AddPatientHistoryRequest(patient_blood = "B+", patient_diseases = "This;That;", patient_vaccines
+            setBody(PatientHistory(patient_blood = "B+", patient_diseases = "This;That;", patient_vaccines
             = "That;Those;", patient_lifestyle = "Smoking;", patient_family = "HeartDisease;", patient_allergies =
             "Covid;" ))
         }.body()
@@ -54,7 +53,7 @@ class PatientHistoryRoutesTesting {
         val response: ServerResponse = client.post("/patient/history") {
             contentType(ContentType.Application.Json)
             bearerAuth(jwt)
-            setBody(AddPatientHistoryRequest(patient_blood = "", patient_diseases = "This;That;", patient_vaccines
+            setBody(PatientHistory(patient_blood = "", patient_diseases = "This;That;", patient_vaccines
             = "That;Those;", patient_lifestyle = "Smoking;", patient_family = "HeartDisease;", patient_allergies =
             "Covid;" ))
         }.body()

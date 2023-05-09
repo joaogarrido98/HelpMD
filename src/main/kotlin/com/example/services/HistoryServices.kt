@@ -2,9 +2,7 @@ package com.example.services
 
 import com.example.database.DatabaseManager
 import com.example.entities.PatientHistoryTable
-import com.example.models.AddPatientHistoryRequest
 import com.example.models.PatientHistory
-import org.jetbrains.exposed.sql.ResultRow
 import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.select
 
@@ -17,16 +15,16 @@ class HistoryServices {
      * @param patientId holds patient id to be inserted to
      * @param patientHistory holds the data to be inserted
      */
-    suspend fun addPatientHistory(patientHistory: AddPatientHistoryRequest, patientId: Int) {
+    suspend fun addPatientHistory(patientHistory: PatientHistory, patientId: Int) {
         db.query {
             PatientHistoryTable.insert {
                 it[patient_id] = patientId
-                it[patient_allergies] = patientHistory.patient_allergies
-                it[patient_diseases] = patientHistory.patient_diseases
-                it[patient_family] = patientHistory.patient_family
-                it[patient_lifestyle] = patientHistory.patient_lifestyle
-                it[patient_vaccines] = patientHistory.patient_vaccines
-                it[patient_blood] = patientHistory.patient_blood
+                it[patient_allergies] = patientHistory.patient_allergies as String
+                it[patient_diseases] = patientHistory.patient_diseases as String
+                it[patient_family] = patientHistory.patient_family as String
+                it[patient_lifestyle] = patientHistory.patient_lifestyle as String
+                it[patient_vaccines] = patientHistory.patient_vaccines as String
+                it[patient_blood] = patientHistory.patient_blood as String
             }
         }
     }

@@ -21,18 +21,18 @@ fun Route.doctorRoutes(doctorServices: DoctorServices) {
      * if correct we return a jwt token and the doctor object
      */
     post("doctor/login") {
-        val request = call.receive<DoctorLoginRequest>()
-        if (!request.isValid()) {
+        val request = call.receive<Doctor>()
+        if (!request.isLoginValid()) {
             call.respond(ServerResponse(false, "Bad Request"))
             return@post
         }
         try {
-            val doctor: Doctor? = doctorServices.findDoctorByEmail(request.doctor_email)
+            val doctor: Doctor? = request.doctor_email?.let { it1 -> doctorServices.findDoctorByEmail(it1) }
             if (doctor == null) {
                 call.respond(ServerResponse(false, "Doctor does not exist"))
                 return@post
             }
-            if (doctor.doctor_password != HashingUtils.hash(request.doctor_password)) {
+            if (doctor.doctor_password != request.doctor_password?.let { it1 -> HashingUtils.hash(it1) }) {
                 call.respond(ServerResponse(false, "Email or password incorrect"))
                 return@post
             }
@@ -49,21 +49,21 @@ fun Route.doctorRoutes(doctorServices: DoctorServices) {
      * in the database
      */
     post("doctor/password/recover") {
-        val request = call.receive<DoctorRecoverPasswordRequest>()
-        if (!request.isValid()) {
+        val request = call.receive<Doctor>()
+        if (!request.isRegisterValid()) {
             call.respond(ServerResponse(false, "Bad Request"))
             return@post
         }
         try {
-            val doctor = doctorServices.findDoctorByEmail(request.doctor_email)
+            val doctor = request.doctor_email?.let { it1 -> doctorServices.findDoctorByEmail(it1) }
             if (doctor == null) {
                 call.respond(ServerResponse(false, "Doctor does not exist"))
                 return@post
             }
             val password = ProjectUtils.generateRandomCode()
             val hashedPassword = HashingUtils.hash(password)
-            MessageUtils.sendRecoverEmail(request.doctor_email, password)
-            doctorServices.updatePassword(request.doctor_email, hashedPassword)
+            request.doctor_email.let { it1 -> MessageUtils.sendRecoverEmail(it1, password) }
+            request.doctor_email.let { it1 -> doctorServices.updatePassword(it1, hashedPassword) }
             call.respond(ServerResponse(true, "New Password Sent"))
         } catch (e: Exception) {
             call.respond(ServerResponse(false, "Unable to get new password"))
@@ -75,13 +75,13 @@ fun Route.doctorRoutes(doctorServices: DoctorServices) {
      * register a new doctor
      */
     post("doctor/register") {
-        val request = call.receive<DoctorRegisterRequest>()
-        if (!request.isValid()) {
+        val request = call.receive<Doctor>()
+        if (!request.isRecoverValid()) {
             call.respond(ServerResponse(false, "Bad Request"))
             return@post
         }
         try {
-            request.doctor_password = HashingUtils.hash(request.doctor_password)
+            request.doctor_password = request.doctor_password?.let { it1 -> HashingUtils.hash(it1) }
             doctorServices.addDoctor(request)
             call.respond(ServerResponse(true, "Account created"))
         } catch (e: Exception) {
@@ -96,7 +96,7 @@ fun Route.doctorRoutes(doctorServices: DoctorServices) {
         get("doctor/patients"){
             try{
                 val doctor = call.principal<Doctor>()!!.doctor_id
-                val patients = doctorServices.getDoctorPatients(doctor)
+                val patients = doctor?.let { it1 -> doctorServices.getDoctorPatients(it1) }
                 call.respond(ServerResponse(true, "Doctor Patients", patients))
             }catch (e:Exception){
                 call.respond(ServerResponse(false,"Unable to get patients"))

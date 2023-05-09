@@ -36,23 +36,23 @@ class PatientServices {
      * @param code holds the code to be inserted
      * @param doctor holds the id of the doctor to be inserted in the patients table
      */
-    suspend fun addPatient(patient: PatientRegisterRequest, code: String, doctor: Int) {
+    suspend fun addPatient(patient: Patient, code: String, doctor: Int) {
         db.query {
             PatientTable.insert {
-                it[patient_name] = patient.patient_name
-                it[patient_email] = patient.patient_email
+                it[patient_name] = patient.patient_name as String
+                it[patient_email] = patient.patient_email as String
                 it[patient_dob] = LocalDate.parse(patient.patient_dob)
-                it[patient_password] = patient.patient_password
-                it[patient_gender] = patient.patient_gender
-                it[patient_weight] = patient.patient_weight
-                it[patient_height] = patient.patient_height
+                it[patient_password] = patient.patient_password as String
+                it[patient_gender] = patient.patient_gender as String
+                it[patient_weight] = patient.patient_weight as Int
+                it[patient_height] = patient.patient_height as Int
                 it[patient_active] = false
-                it[patient_deaf] = patient.patient_deaf
+                it[patient_deaf] = patient.patient_deaf as Boolean
                 it[patient_doctor] = doctor
             }
             ActivationTable.insert {
                 it[activation_code] = code
-                it[patient_email] = patient.patient_email
+                it[patient_email] = patient.patient_email as String
             }
             DoctorTable.update(where = { DoctorTable.doctor_id eq doctor }) {
                 it.update(doctor_patients_count, doctor_patients_count + 1)
@@ -102,7 +102,7 @@ class PatientServices {
                 it[patient_active] = true
             }
             ActivationTable.deleteWhere {
-                ActivationTable.activation_code.eq(code)
+                activation_code.eq(code)
             }
         }
     }

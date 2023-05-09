@@ -5,14 +5,10 @@ import javax.crypto.Mac
 import javax.crypto.spec.SecretKeySpec
 
 object HashingUtils {
-    /**
-     * create a byte array from secret keyword
-     */
+    //create a byte array from secret keyword
     private val hashKey = System.getenv("HASH_KEY").toByteArray()
 
-    /**
-     * create a secret key from a given byteArray and algorithm
-     */
+    //create a secret key from a given byteArray and algorithm
     private val hmacKey = SecretKeySpec(hashKey, "HmacSHA256")
 
     /**

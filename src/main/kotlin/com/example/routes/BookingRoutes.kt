@@ -16,7 +16,7 @@ fun Route.bookingRoutes(bookingServices: BookingServices) {
         get("bookings/patient") {
             try {
                 val patient = call.principal<Patient>()!!.patient_id
-                val bookings = bookingServices.getPatientBookings(patient)
+                val bookings = patient?.let { it1 -> bookingServices.getPatientBookings(it1) }
                 call.respond(ServerResponse(true, "Bookings", bookings))
             } catch (e: Exception) {
                 call.respond(ServerResponse(false, "Unable to get bookings"))
@@ -29,7 +29,7 @@ fun Route.bookingRoutes(bookingServices: BookingServices) {
         get("bookings/previous") {
             try {
                 val patient = call.principal<Patient>()!!.patient_id
-                val bookings = bookingServices.getPreviousPatientBookings(patient)
+                val bookings = patient?.let { it1 -> bookingServices.getPreviousPatientBookings(it1) }
                 call.respond(ServerResponse(true, "Bookings", bookings))
             } catch (e: Exception) {
                 call.respond(ServerResponse(false, "Unable to get bookings"))
@@ -42,7 +42,7 @@ fun Route.bookingRoutes(bookingServices: BookingServices) {
         get("appointment/results") {
             try {
                 val patient = call.principal<Patient>()!!.patient_id
-                val appointmentResults = bookingServices.getAppointmentResults(patient)
+                val appointmentResults = patient?.let { it1 -> bookingServices.getAppointmentResults(it1) }
                 call.respond(ServerResponse(true, "Appointment Results", appointmentResults))
             } catch (e: Exception) {
                 call.respond(ServerResponse(false, "Unable to get appointment results"))
@@ -55,7 +55,7 @@ fun Route.bookingRoutes(bookingServices: BookingServices) {
         get("appointment/results/latest") {
             try {
                 val patient = call.principal<Patient>()!!.patient_id
-                val appointmentResult = bookingServices.getLatestResult(patient)
+                val appointmentResult = patient?.let { it1 -> bookingServices.getLatestResult(it1) }
                 call.respond(ServerResponse(true, "Appointment Results", appointmentResult))
             } catch (e: Exception) {
                 call.respond(ServerResponse(false, "Unable to get appointment results"))
@@ -68,7 +68,7 @@ fun Route.bookingRoutes(bookingServices: BookingServices) {
          * Add booking to db
          */
         post("bookings/add") {
-            val request = call.receive<AddBookingsRequest>()
+            val request = call.receive<Bookings>()
             if (!request.isValid()) {
                 call.respond(ServerResponse(false, "Bad Request"))
                 return@post
@@ -93,7 +93,7 @@ fun Route.bookingRoutes(bookingServices: BookingServices) {
         get("bookings/upcoming") {
             try {
                 val patient = call.principal<Patient>()!!.patient_id
-                val bookings = bookingServices.getUpcomingBookings(patient)
+                val bookings = patient?.let { it1 -> bookingServices.getUpcomingBookings(it1) }
                 if (bookings == null) {
                     call.respond(ServerResponse(false, "No upcoming booking"))
                     return@get
@@ -127,7 +127,7 @@ fun Route.bookingRoutes(bookingServices: BookingServices) {
         get("bookings/upcoming/doctor") {
             try {
                 val doctor = call.principal<Doctor>()!!.doctor_id
-                val bookings = bookingServices.getUpcomingBookingsDoctor(doctor)
+                val bookings = doctor?.let { it1 -> bookingServices.getUpcomingBookingsDoctor(it1) }
                 call.respond(ServerResponse(true, "Upcoming Bookings", bookings))
             } catch (e: Exception) {
                 call.respond(ServerResponse(false, "Unable to get booking"))
@@ -139,7 +139,7 @@ fun Route.bookingRoutes(bookingServices: BookingServices) {
          * add appointment results
          */
         post("appointment/results/add") {
-            val request = call.receive<AddAppointmentResult>()
+            val request = call.receive<AppointmentResult>()
             if (!request.isValid()) {
                 call.respond(ServerResponse(false, "Bad Request"))
                 return@post

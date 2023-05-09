@@ -1,7 +1,7 @@
 package com.example.routes
 
-import com.example.models.AddScheduleRequest
 import com.example.models.Doctor
+import com.example.models.Schedule
 import com.example.models.ServerResponse
 import com.example.services.ScheduleServices
 import io.ktor.server.application.*
@@ -17,7 +17,7 @@ fun Route.schedulesRoutes(scheduleServices: ScheduleServices) {
          * add a new schedule to the database route
          */
         post("schedules/add"){
-            val request = call.receive<AddScheduleRequest>()
+            val request = call.receive<Schedule>()
             if (!request.isValid()) {
                 call.respond(ServerResponse(false, "Bad Request"))
                 return@post
@@ -51,7 +51,7 @@ fun Route.schedulesRoutes(scheduleServices: ScheduleServices) {
         get("schedules/doctor"){
             try{
                 val doctor = call.principal<Doctor>()!!.doctor_id
-                val schedules = scheduleServices.getAllSchedules(doctor)
+                val schedules = doctor?.let { it1 -> scheduleServices.getAllSchedules(it1) }
                 call.respond(ServerResponse(true, "Doctor Schedules", schedules))
             }catch (e:Exception){
                 call.respond(ServerResponse(false,"Unable to get schedules"))

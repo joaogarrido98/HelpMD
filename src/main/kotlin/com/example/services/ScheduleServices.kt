@@ -4,17 +4,12 @@ import com.example.database.DatabaseManager
 import com.example.entities.BookingsTable
 import com.example.entities.DoctorTable
 import com.example.entities.SchedulesTable
-import com.example.models.AddScheduleRequest
 import com.example.models.Bookings
 import com.example.models.Schedule
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
-import org.jetbrains.exposed.sql.javatime.date
-import org.jetbrains.exposed.sql.javatime.day
-import java.time.DayOfWeek
 import java.time.LocalDateTime
 import java.time.LocalTime
-import javax.swing.text.MutableAttributeSet
 
 class ScheduleServices {
     private val db = DatabaseManager
@@ -24,13 +19,13 @@ class ScheduleServices {
      * add a new schedule
      * @param schedule object
      */
-    suspend fun addSchedule(schedule: AddScheduleRequest) {
+    suspend fun addSchedule(schedule: Schedule) {
         db.query {
             SchedulesTable.insert {
-                it[schedule_doctor] = schedule.schedule_doctor
+                it[schedule_doctor] = schedule.schedule_doctor as Int
                 it[schedule_end] = LocalTime.parse(schedule.schedule_end)
                 it[schedule_start] = LocalTime.parse(schedule.schedule_start)
-                it[schedule_day_of_week] = schedule.schedule_day_of_week
+                it[schedule_day_of_week] = schedule.schedule_day_of_week as Int
             }
         }
     }

@@ -1,7 +1,7 @@
 package com.example.routes
 
-import com.example.models.AddPatientHistoryRequest
 import com.example.models.Patient
+import com.example.models.PatientHistory
 import com.example.models.ServerResponse
 import com.example.services.HistoryServices
 import io.ktor.server.application.*
@@ -17,14 +17,16 @@ fun Route.patientHistoryRoutes(historyServices: HistoryServices) {
          *  where the jwt token verifies to be the same as the patient
          */
         post("patient/history") {
-            val request = call.receive<AddPatientHistoryRequest>()
+            val request = call.receive<PatientHistory>()
             if (!request.isValid()) {
                 call.respond(ServerResponse(false, "Bad request"))
                 return@post
             }
             try {
                 val patientId = call.principal<Patient>()!!.patient_id
-                historyServices.addPatientHistory(request, patientId)
+                if (patientId != null) {
+                    historyServices.addPatientHistory(request, patientId)
+                }
                 call.respond(ServerResponse(true, "Medical history added"))
             } catch (e: Exception) {
                 call.respond(ServerResponse(false, "Unable to add patient history"))
@@ -37,7 +39,7 @@ fun Route.patientHistoryRoutes(historyServices: HistoryServices) {
         get("patient/history") {
             try {
                 val patientId = call.principal<Patient>()!!.patient_id
-                val history = historyServices.findPatientHistory(patientId)
+                val history = patientId?.let { it1 -> historyServices.findPatientHistory(it1) }
                 if (history == null) {
                     call.respond(ServerResponse(true, "No medical history", null))
                     return@get

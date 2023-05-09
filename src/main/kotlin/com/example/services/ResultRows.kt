@@ -102,15 +102,15 @@ object ResultRows {
             booking_date_end = row[BookingsTable.booking_date_end].toString(),
             booking_doctor = row[DoctorTable.doctor_name],
             booking_id = row[BookingsTable.booking_id],
-            booking_patient = row[BookingsTable.booking_patient]
+            booking_patient_id = row[BookingsTable.booking_patient]
         )
     }
 
     /**
      *
      */
-    fun rowToBookingsDoctor(row: ResultRow): BookingsDoctor {
-        return BookingsDoctor(
+    fun rowToBookingsDoctor(row: ResultRow): Bookings {
+        return Bookings(
             booking_date_start = row[BookingsTable.booking_date_start].toString(),
             booking_date_end = row[BookingsTable.booking_date_end].toString(),
             booking_doctor = row[BookingsTable.booking_doctor],

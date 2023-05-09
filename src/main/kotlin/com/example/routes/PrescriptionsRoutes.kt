@@ -22,7 +22,7 @@ fun Route.prescriptionsRoutes(prescriptionsServices: PrescriptionsServices) {
          * Add prescription to db
          */
         post("prescriptions/add") {
-            val request = call.receive<PrescriptionsAddRequest>()
+            val request = call.receive<Prescriptions>()
             if (!request.isValid()) {
                 call.respond(ServerResponse(false, "Bad Request"))
                 return@post
@@ -47,12 +47,12 @@ fun Route.prescriptionsRoutes(prescriptionsServices: PrescriptionsServices) {
             try {
                 val patient = call.principal<Patient>()!!.patient_id
                 if (prescriptionType == "regular") {
-                    val prescriptions = prescriptionsServices.getPrescriptions(patient, true)
+                    val prescriptions = patient?.let { it1 -> prescriptionsServices.getPrescriptions(it1, true) }
                     call.respond(ServerResponse(true, "Prescriptions", prescriptions))
                     return@get
                 }
                 if (prescriptionType == "once") {
-                    val prescriptions = prescriptionsServices.getPrescriptions(patient,false)
+                    val prescriptions = patient?.let { it1 -> prescriptionsServices.getPrescriptions(it1,false) }
                     call.respond(ServerResponse(true, "Prescriptions", prescriptions))
                     return@get
                 }
@@ -68,7 +68,7 @@ fun Route.prescriptionsRoutes(prescriptionsServices: PrescriptionsServices) {
         get("prescriptions/recent"){
             try{
                 val patient = call.principal<Patient>()!!.patient_id
-                val prescription = prescriptionsServices.getMostRecentPrescription(patient)
+                val prescription = patient?.let { it1 -> prescriptionsServices.getMostRecentPrescription(it1) }
                 call.respond(ServerResponse(true, "Prescription", prescription))
             }catch (e:Exception){
                 println(e.toString())
@@ -113,12 +113,12 @@ fun Route.prescriptionsRoutes(prescriptionsServices: PrescriptionsServices) {
                     h1{
                         +"Prescription"
                     }
-                    if(prescription.prescription_used && !prescription.prescription_regular){
+                    if(prescription.prescription_used!! && !prescription.prescription_regular!!){
                         h2("handed"){
                             +"This prescription has been handled already"
                         }
                     }
-                    if(prescription.prescription_regular){
+                    if(prescription.prescription_regular!!){
                         h2("regular") {
                             +"This prescription is a regular prescription"
                         }
@@ -127,31 +127,31 @@ fun Route.prescriptionsRoutes(prescriptionsServices: PrescriptionsServices) {
                         +"Medicine:"
                     }
                     p {
-                        +prescription.prescription_medicine
+                        +prescription.prescription_medicine!!
                     }
                     h2 {
                         +"Date of Prescriptions:"
                     }
                     p {
-                        +prescription.prescription_date
+                        +prescription.prescription_date!!
                     }
                     h2 {
                         +"Doctor:"
                     }
                     p {
-                        +prescription.prescription_doctor
+                        +prescription.prescription_doctor.toString()
                     }
                     h2 {
                         +"Medicine Type:"
                     }
                     p {
-                        +prescription.prescription_type
+                        +prescription.prescription_type!!
                     }
                     h2 {
                         +"How to take:"
                     }
                     p {
-                        +prescription.prescription_dosage
+                        +prescription.prescription_dosage!!
                     }
                 }
             }

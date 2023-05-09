@@ -9,7 +9,8 @@ import org.jetbrains.exposed.sql.javatime.date
 object PatientTable : Table("Patient"){
     val patient_id = integer("patient_id").autoIncrement()
     val patient_name = varchar("patient_name", 100)
-    val patient_email = varchar("patient_email", 500).uniqueIndex("idx_patient_email")
+    val patient_email = varchar("patient_email", 500)
+        .uniqueIndex("idx_patient_email")
     val patient_dob = date("patient_dob")
     val patient_weight = integer("patient_weight")
     val patient_height = integer("patient_height")

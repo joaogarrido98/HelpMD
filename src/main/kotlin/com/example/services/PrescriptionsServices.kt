@@ -1,15 +1,11 @@
 package com.example.services
 
 import com.example.database.DatabaseManager
-import com.example.entities.ActiveDoctorTable
 import com.example.entities.DoctorTable
 import com.example.entities.PrescriptionsTable
-import com.example.models.Doctor
 import com.example.models.Prescriptions
-import com.example.models.PrescriptionsAddRequest
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
-import org.jetbrains.exposed.sql.SqlExpressionBuilder.greater
 import java.time.LocalDate
 
 class PrescriptionsServices {
@@ -20,16 +16,16 @@ class PrescriptionsServices {
      * Add a new prescription to the database
      * @param prescription holds a Prescription add object
      */
-    suspend fun addPrescription(prescription: PrescriptionsAddRequest) {
+    suspend fun addPrescription(prescription: Prescriptions) {
         db.query {
             PrescriptionsTable.insert {
-                it[patient_id] = prescription.patient_id
+                it[patient_id] = prescription.patient_id as Int
                 it[prescription_date] = LocalDate.now()
-                it[prescription_doctor] = prescription.prescription_doctor!!
-                it[prescription_dosage] = prescription.prescription_dosage
-                it[prescription_medicine] = prescription.prescription_medicine
-                it[prescription_regular] = prescription.prescription_regular
-                it[prescription_type] = prescription.prescription_type
+                it[prescription_doctor] = prescription.prescription_doctor as Int
+                it[prescription_dosage] = prescription.prescription_dosage as String
+                it[prescription_medicine] = prescription.prescription_medicine as String
+                it[prescription_regular] = prescription.prescription_regular as Boolean
+                it[prescription_type] = prescription.prescription_type as String
             }
         }
     }
